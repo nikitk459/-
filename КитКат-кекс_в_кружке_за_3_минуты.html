@@ -1,0 +1,1501 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="description" content="КитКат-кекс в кружке — интерактивный рецепт с таймерами на каждый шаг, пересчётом порций и чек-листом. Готовится в микроволновке за 2 минуты.">
+<meta name="theme-color" content="#5C3620">
+<meta name="keywords" content="киткат, кекс в кружке, микроволновка, рецепт, шоколадный десерт, mug cake">
+<meta property="og:title" content="КитКат-кекс в кружке">
+<meta property="og:description" content="Мягкий шоколадный кекс с хрустящим KitKat за 2 минуты в микроволновке">
+<meta property="og:type" content="website">
+<title>КитКат-кекс в кружке — рецепт с таймером</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700;9..144,800&family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1"></script>
+
+<style>
+/* ================================================================
+   ТОКЕНЫ
+   ================================================================ */
+* { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+:root {
+    --bg: #FBF2E5;
+    --bg-soft: #F4E5CE;
+    --card: #FFFFFF;
+    --card-soft: #FCF6EC;
+    --ink: #2A1B10;
+    --ink-soft: #6E5642;
+    --ink-faint: #A6906F;
+    --cocoa: #5C3620;
+    --cocoa-dark: #3A2113;
+    --cocoa-tint: #F1E1CC;
+    --gold: #C4913C;
+    --gold-soft: #F3DFAF;
+    --success: #5F7D3F;
+    --success-tint: #E4EBD6;
+    --danger: #A6482F;
+    --border: rgba(42, 27, 16, 0.12);
+    --border-soft: rgba(42, 27, 16, 0.07);
+
+    --shadow-sm: 0 1px 3px rgba(42, 22, 10, 0.08);
+    --shadow-md: 0 6px 20px rgba(42, 22, 10, 0.10);
+    --shadow-lg: 0 16px 40px rgba(42, 22, 10, 0.16);
+
+    --r-sm: 10px;
+    --r-md: 16px;
+    --r-lg: 22px;
+    --r-pill: 999px;
+
+    --display: 'Fraunces', Georgia, serif;
+    --body: 'Manrope', system-ui, sans-serif;
+    --mono: 'JetBrains Mono', monospace;
+
+    --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+body.dark {
+    --bg: #19110B;
+    --bg-soft: #241810;
+    --card: #241810;
+    --card-soft: #2C1E14;
+    --ink: #F3E7D6;
+    --ink-soft: #C7AD8C;
+    --ink-faint: #8A7157;
+    --cocoa: #D9A85C;
+    --cocoa-dark: #E9C589;
+    --cocoa-tint: #33241733;
+    --gold: #E3B45C;
+    --gold-soft: #3A2A16;
+    --success: #8FB06B;
+    --success-tint: #26301C;
+    --border: rgba(230, 205, 170, 0.14);
+    --border-soft: rgba(230, 205, 170, 0.08);
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.3);
+    --shadow-md: 0 6px 20px rgba(0,0,0,0.35);
+    --shadow-lg: 0 16px 44px rgba(0,0,0,0.5);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important; }
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+    font-family: var(--body);
+    background: var(--bg);
+    color: var(--ink);
+    min-height: 100vh;
+    line-height: 1.6;
+    transition: background 0.4s var(--ease), color 0.4s var(--ease);
+}
+
+/* тонкая текстура бумаги — один слой, едва заметный */
+#grain {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0.05;
+    mix-blend-mode: multiply;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 300 300' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+body.dark #grain { opacity: 0.09; mix-blend-mode: overlay; }
+
+a { color: inherit; }
+button { font: inherit; }
+
+.wrap {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 20px 16px 48px;
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+/* ================================================================
+   ШАПКА
+   ================================================================ */
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 6px 2px;
+}
+.brand { display: flex; align-items: center; gap: 10px; }
+.brand-mark {
+    width: 40px; height: 40px;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--cocoa);
+}
+.brand-mark svg { width: 100%; height: 100%; }
+.brand-name {
+    font-family: var(--display);
+    font-optical-sizing: auto;
+    font-weight: 600;
+    font-size: 20px;
+    letter-spacing: -0.01em;
+}
+.brand-name em { font-style: normal; color: var(--gold); }
+
+.header-actions { display: flex; gap: 6px; }
+.icon-btn {
+    width: 38px; height: 38px;
+    border-radius: 50%;
+    border: 1px solid var(--border);
+    background: var(--card);
+    color: var(--ink-soft);
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    font-size: 15px;
+    transition: border-color 0.2s var(--ease), color 0.2s var(--ease), background 0.2s var(--ease);
+}
+.icon-btn:hover { color: var(--cocoa); border-color: var(--cocoa); }
+body.dark .icon-btn:hover { color: var(--gold); border-color: var(--gold); }
+
+/* ================================================================
+   HERO
+   ================================================================ */
+.hero {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--r-lg);
+    padding: 30px 24px 26px;
+    text-align: center;
+    box-shadow: var(--shadow-sm);
+    position: relative;
+    overflow: hidden;
+}
+.hero-mug {
+    width: 96px;
+    height: 96px;
+    margin: 0 auto 10px;
+    color: var(--cocoa);
+}
+body.dark .hero-mug { color: var(--gold); }
+.hero-mug svg { width: 100%; height: 100%; }
+.steam { animation: steamRise 3.5s ease-in-out infinite; transform-origin: bottom center; }
+.steam.s2 { animation-delay: -1.2s; }
+.steam.s3 { animation-delay: -2.3s; }
+@keyframes steamRise {
+    0% { transform: translateY(0) scaleY(1); opacity: 0.15; }
+    50% { transform: translateY(-6px) scaleY(1.08); opacity: 0.55; }
+    100% { transform: translateY(-12px) scaleY(1); opacity: 0; }
+}
+
+.hero h1 {
+    font-family: var(--display);
+    font-optical-sizing: auto;
+    font-weight: 700;
+    font-size: 34px;
+    letter-spacing: -0.01em;
+    line-height: 1.12;
+}
+@media (min-width: 560px) { .hero h1 { font-size: 42px; } }
+.hero p {
+    color: var(--ink-soft);
+    margin-top: 10px;
+    font-size: 15px;
+    max-width: 440px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.stat-row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 18px;
+}
+.stat-chip {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    padding: 7px 14px;
+    border-radius: var(--r-pill);
+    background: var(--cocoa-tint);
+    color: var(--cocoa);
+    font-size: 13px;
+    font-weight: 700;
+}
+body.dark .stat-chip { color: var(--gold); }
+.stat-chip i { font-size: 12px; opacity: 0.85; }
+
+.stripe-divider {
+    height: 6px;
+    margin-top: 22px;
+    border-radius: var(--r-pill);
+    background: repeating-linear-gradient(-40deg, var(--cocoa) 0 10px, var(--gold) 10px 20px);
+    opacity: 0.85;
+}
+
+/* ================================================================
+   КНОПКИ
+   ================================================================ */
+.btn-main {
+    width: 100%;
+    border: none;
+    border-radius: var(--r-pill);
+    padding: 17px 24px;
+    background: var(--cocoa);
+    color: #FCF3E4;
+    font-family: var(--display);
+    font-weight: 600;
+    font-optical-sizing: auto;
+    font-size: 19px;
+    display: flex; align-items: center; justify-content: center; gap: 10px;
+    cursor: pointer;
+    box-shadow: var(--shadow-md);
+    transition: transform 0.25s var(--ease), box-shadow 0.25s var(--ease), background 0.25s var(--ease);
+}
+.btn-main:hover { transform: translateY(-2px); box-shadow: var(--shadow-lg); background: var(--cocoa-dark); }
+.btn-main:active { transform: translateY(0) scale(0.99); }
+body.dark .btn-main { background: var(--gold); color: #241708; }
+body.dark .btn-main:hover { background: var(--cocoa-dark); }
+
+.btn-line {
+    border: 1.5px solid var(--border);
+    background: transparent;
+    border-radius: var(--r-pill);
+    padding: 9px 18px;
+    font-weight: 700;
+    font-size: 13px;
+    color: var(--ink-soft);
+    cursor: pointer;
+    display: inline-flex; align-items: center; gap: 7px;
+    transition: border-color 0.2s var(--ease), color 0.2s var(--ease);
+}
+.btn-line:hover { border-color: var(--cocoa); color: var(--cocoa); }
+body.dark .btn-line:hover { border-color: var(--gold); color: var(--gold); }
+
+.btn-line.danger:hover { border-color: var(--danger); color: var(--danger); }
+
+/* ================================================================
+   ПРОГРЕСС
+   ================================================================ */
+.progress-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--r-md);
+    padding: 18px 20px;
+    box-shadow: var(--shadow-sm);
+}
+.progress-top {
+    display: flex; align-items: baseline; justify-content: space-between;
+    font-size: 13px; font-weight: 700; color: var(--ink-soft);
+    text-transform: uppercase; letter-spacing: 0.04em;
+}
+.progress-top span:last-child { font-family: var(--mono); font-size: 15px; color: var(--cocoa); }
+body.dark .progress-top span:last-child { color: var(--gold); }
+.progress-track {
+    height: 8px;
+    border-radius: var(--r-pill);
+    background: var(--bg-soft);
+    margin-top: 10px;
+    overflow: hidden;
+}
+.progress-fill {
+    height: 100%;
+    border-radius: var(--r-pill);
+    background: linear-gradient(90deg, var(--cocoa), var(--gold));
+    width: 0%;
+    transition: width 0.6s var(--ease);
+}
+.progress-note { margin-top: 8px; font-size: 13px; color: var(--ink-faint); }
+
+/* ================================================================
+   ВКЛАДКИ
+   ================================================================ */
+.tabs {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--r-lg);
+    box-shadow: var(--shadow-sm);
+    overflow: hidden;
+}
+.tabs-head {
+    display: flex;
+    overflow-x: auto;
+    scrollbar-width: none;
+    border-bottom: 1px solid var(--border);
+}
+.tabs-head::-webkit-scrollbar { display: none; }
+.tab-btn {
+    flex: 1;
+    min-width: max-content;
+    display: flex; align-items: center; justify-content: center; gap: 7px;
+    padding: 15px 18px;
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid transparent;
+    font-weight: 700;
+    font-size: 13.5px;
+    color: var(--ink-faint);
+    cursor: pointer;
+    transition: color 0.2s var(--ease), border-color 0.2s var(--ease);
+}
+.tab-btn i { font-size: 14px; }
+.tab-btn:hover { color: var(--ink); }
+.tab-btn.active { color: var(--cocoa); border-bottom-color: var(--cocoa); }
+body.dark .tab-btn.active { color: var(--gold); border-bottom-color: var(--gold); }
+
+.tab-panel { display: none; padding: 22px; animation: panelIn 0.3s var(--ease); }
+.tab-panel.active { display: block; }
+@keyframes panelIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+
+/* ================================================================
+   ИНГРЕДИЕНТЫ
+   ================================================================ */
+.ing-head {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 12px; flex-wrap: wrap; margin-bottom: 4px;
+}
+.ing-head h2 {
+    font-family: var(--display); font-weight: 600; font-size: 20px; font-optical-sizing: auto;
+    display: flex; align-items: center; gap: 9px;
+}
+.ing-head h2 i { color: var(--cocoa); font-size: 17px; }
+body.dark .ing-head h2 i { color: var(--gold); }
+
+.portion-ctl {
+    display: flex; align-items: center; gap: 2px;
+    background: var(--bg-soft);
+    border-radius: var(--r-pill);
+    padding: 4px;
+}
+.portion-ctl button {
+    width: 30px; height: 30px; border-radius: 50%;
+    border: none; background: var(--card);
+    color: var(--cocoa); font-size: 15px; font-weight: 700;
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+    box-shadow: var(--shadow-sm);
+    transition: transform 0.15s var(--ease);
+}
+body.dark .portion-ctl button { color: var(--gold); }
+.portion-ctl button:hover { transform: scale(1.08); }
+.portion-input {
+    width: 34px; text-align: center; border: none; background: transparent;
+    font-weight: 800; font-size: 15px; color: var(--ink); font-family: var(--body);
+}
+.portion-label { font-size: 12px; color: var(--ink-faint); padding-right: 6px; }
+
+.group-title {
+    font-size: 12px; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase;
+    color: var(--ink-faint); margin: 20px 0 9px;
+}
+.group-title:first-of-type { margin-top: 16px; }
+
+.ing-item {
+    display: flex; align-items: center; gap: 12px;
+    padding: 11px 14px;
+    border-radius: var(--r-sm);
+    border: 1px solid var(--border-soft);
+    margin-bottom: 7px;
+    cursor: pointer;
+    transition: border-color 0.2s var(--ease), background 0.2s var(--ease);
+}
+.ing-item:hover { border-color: var(--border); background: var(--bg-soft); }
+.ing-item input {
+    width: 19px; height: 19px; accent-color: var(--cocoa); flex-shrink: 0; pointer-events: none;
+}
+body.dark .ing-item input { accent-color: var(--gold); }
+.ing-name { flex: 1; font-weight: 600; font-size: 14.5px; }
+.ing-amt {
+    font-family: var(--mono); font-size: 12.5px; font-weight: 500;
+    color: var(--ink-soft); background: var(--bg-soft); padding: 4px 10px; border-radius: var(--r-pill);
+}
+.ing-item.checked { opacity: 0.45; }
+.ing-item.checked .ing-name { text-decoration: line-through; }
+
+.row-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px; }
+.row-actions .btn-line { flex: 1; justify-content: center; min-width: 140px; }
+
+.nutri-note {
+    margin-top: 20px;
+    padding: 14px 16px;
+    border-radius: var(--r-sm);
+    background: var(--bg-soft);
+    font-size: 13px;
+    color: var(--ink-soft);
+    display: flex; gap: 10px; align-items: flex-start;
+}
+.nutri-note i { color: var(--cocoa); margin-top: 2px; }
+body.dark .nutri-note i { color: var(--gold); }
+
+/* ================================================================
+   ШАГИ
+   ================================================================ */
+.step-group {
+    font-family: var(--display); font-weight: 600; font-optical-sizing: auto;
+    font-size: 20px; margin: 26px 0 12px; color: var(--ink);
+}
+.step-group:first-child { margin-top: 2px; }
+
+.step {
+    border: 1px solid var(--border);
+    border-radius: var(--r-md);
+    margin-bottom: 14px;
+    overflow: hidden;
+    transition: border-color 0.2s var(--ease), box-shadow 0.2s var(--ease);
+    background: var(--card);
+}
+.step:hover { box-shadow: var(--shadow-sm); }
+.step.locked { opacity: 0.5; }
+.step.done { border-color: var(--success); background: var(--success-tint); }
+.step.hidden { display: none; }
+
+.step-body { padding: 18px 18px 16px; }
+.step-top { display: flex; align-items: center; gap: 13px; flex-wrap: wrap; margin-bottom: 8px; }
+.step-num {
+    width: 38px; height: 38px; border-radius: 50%;
+    background: var(--cocoa); color: #FCF3E4;
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--display); font-weight: 700; font-size: 17px;
+    flex-shrink: 0;
+}
+.step.done .step-num { background: var(--success); }
+body.dark .step-num { background: var(--gold); color: #241708; }
+body.dark .step.done .step-num { background: var(--success); color: #10160a; }
+.step-title { font-weight: 700; font-size: 16.5px; flex: 1; }
+.step.locked .step-title::after { content: " · заблокировано"; font-weight: 500; font-size: 12px; color: var(--ink-faint); }
+
+.step-badge {
+    font-size: 11.5px; font-weight: 700; color: var(--ink-soft);
+    background: var(--bg-soft); padding: 4px 11px; border-radius: var(--r-pill);
+    display: inline-flex; align-items: center; gap: 5px;
+}
+
+.step-desc { color: var(--ink-soft); font-size: 14px; padding-left: 51px; margin-bottom: 10px; }
+
+.substeps { padding-left: 51px; margin-bottom: 10px; display: flex; flex-direction: column; gap: 3px; }
+.substep { display: flex; align-items: center; gap: 9px; padding: 4px 0; font-size: 13.5px; flex-wrap: wrap; }
+.substep input {
+    width: 17px; height: 17px; accent-color: var(--cocoa); flex-shrink: 0; cursor: pointer;
+}
+body.dark .substep input { accent-color: var(--gold); }
+.substep.checked span:first-of-type { text-decoration: line-through; opacity: 0.5; }
+.substep .hint { font-size: 11px; color: var(--ink-faint); }
+
+.timer-launch {
+    margin-left: 51px; margin-top: 2px;
+    border: 1px solid var(--border); background: transparent;
+    border-radius: var(--r-pill); padding: 7px 16px;
+    font-size: 12.5px; font-weight: 700; color: var(--cocoa);
+    display: inline-flex; align-items: center; gap: 7px; cursor: pointer;
+}
+body.dark .timer-launch { color: var(--gold); }
+.timer-launch:disabled { opacity: 0.3; cursor: not-allowed; }
+.timer-launch:hover:not(:disabled) { border-color: var(--cocoa); }
+body.dark .timer-launch:hover:not(:disabled) { border-color: var(--gold); }
+
+.timer-live {
+    margin-left: 51px; margin-top: 4px;
+    display: flex; align-items: center; gap: 12px;
+}
+.timer-live .t {
+    font-family: var(--mono); font-size: 24px; font-weight: 700; color: var(--cocoa);
+}
+body.dark .timer-live .t { color: var(--gold); }
+.timer-stop-btn {
+    width: 32px; height: 32px; border-radius: 50%; border: none;
+    background: var(--bg-soft); color: var(--ink-soft); cursor: pointer;
+    display: flex; align-items: center; justify-content: center; font-size: 13px;
+}
+.timer-stop-btn:hover { background: var(--danger); color: #fff; }
+
+.step-done-btn {
+    width: calc(100% - 36px); margin: 4px 18px 18px;
+    border: 1.5px solid var(--cocoa); background: transparent;
+    border-radius: var(--r-pill); padding: 11px; text-align: center;
+    font-weight: 700; font-size: 14px; color: var(--cocoa); cursor: pointer;
+    transition: background 0.2s var(--ease), color 0.2s var(--ease);
+}
+body.dark .step-done-btn { border-color: var(--gold); color: var(--gold); }
+.step-done-btn:hover:not(:disabled) { background: var(--cocoa); color: #FCF3E4; }
+body.dark .step-done-btn:hover:not(:disabled) { background: var(--gold); color: #241708; }
+.step-done-btn:disabled { background: var(--success); border-color: var(--success); color: #fff; opacity: 0.85; cursor: default; }
+
+/* ================================================================
+   ТАЙМЕРЫ (вкладка)
+   ================================================================ */
+.timer-status {
+    display: flex; align-items: center; gap: 14px;
+    padding: 16px 18px; border-radius: var(--r-md);
+    background: var(--bg-soft);
+}
+.timer-status i { font-size: 22px; color: var(--cocoa); }
+body.dark .timer-status i { color: var(--gold); }
+.timer-status-label { font-weight: 700; font-size: 14.5px; }
+.timer-status-sub { font-size: 13px; color: var(--ink-soft); }
+.timer-status-time { margin-left: auto; font-family: var(--mono); font-size: 26px; font-weight: 700; color: var(--cocoa); }
+body.dark .timer-status-time { color: var(--gold); }
+
+.timer-hint { font-size: 13px; color: var(--ink-faint); padding: 12px 2px 4px; display: flex; gap: 8px; align-items: center; }
+
+.timer-row {
+    display: flex; align-items: center; gap: 12px;
+    padding: 11px 15px; border-radius: var(--r-sm);
+    background: var(--bg-soft); margin-top: 8px;
+}
+.timer-row.is-done { opacity: 0.5; }
+.timer-row .name { flex: 1; font-weight: 600; font-size: 13.5px; }
+.timer-row .time { font-family: var(--mono); font-weight: 700; color: var(--cocoa); }
+body.dark .timer-row .time { color: var(--gold); }
+.timer-row .st { font-size: 11.5px; color: var(--ink-faint); }
+
+/* ================================================================
+   СОВЕТЫ
+   ================================================================ */
+.tip {
+    display: flex; gap: 13px; padding: 14px 4px;
+    border-bottom: 1px solid var(--border-soft);
+}
+.tip:last-child { border-bottom: none; }
+.tip i { color: var(--cocoa); font-size: 16px; margin-top: 2px; flex-shrink: 0; width: 18px; text-align: center; }
+body.dark .tip i { color: var(--gold); }
+.tip h3 { font-size: 14.5px; font-weight: 700; margin-bottom: 3px; }
+.tip p { font-size: 13.5px; color: var(--ink-soft); }
+
+.swap-grid { display: grid; grid-template-columns: 1fr; gap: 10px; margin-top: 6px; }
+@media (min-width: 480px) { .swap-grid { grid-template-columns: 1fr 1fr; } }
+.swap-card { border: 1px solid var(--border); border-radius: var(--r-sm); padding: 12px 14px; }
+.swap-card .from { font-size: 12px; color: var(--ink-faint); text-decoration: line-through; }
+.swap-card .to { font-size: 14px; font-weight: 700; margin-top: 2px; }
+.swap-card .to i { color: var(--gold); margin-right: 6px; }
+
+/* ================================================================
+   ПАНЕЛЬ УПРАВЛЕНИЯ
+   ================================================================ */
+.control-bar {
+    display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;
+    padding: 14px 20px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--r-pill);
+    box-shadow: var(--shadow-sm);
+}
+.check-lbl {
+    display: flex; align-items: center; gap: 8px; cursor: pointer;
+    font-size: 13px; font-weight: 600; color: var(--ink-soft);
+}
+.check-lbl input { width: 17px; height: 17px; accent-color: var(--cocoa); cursor: pointer; }
+body.dark .check-lbl input { accent-color: var(--gold); }
+
+/* ================================================================
+   ПЛАВАЮЩИЙ ТАЙМЕР / TOAST / SCROLL-TOP
+   ================================================================ */
+.floating-timer {
+    position: fixed; left: 16px; right: 16px; bottom: 18px;
+    max-width: 420px; margin: 0 auto;
+    background: var(--cocoa-dark);
+    border-radius: var(--r-pill);
+    padding: 12px 12px 12px 20px;
+    display: flex; align-items: center; justify-content: space-between; gap: 14px;
+    transform: translateY(140%); opacity: 0;
+    transition: transform 0.45s var(--ease), opacity 0.3s var(--ease);
+    z-index: 200;
+    box-shadow: var(--shadow-lg);
+}
+.floating-timer.visible { transform: translateY(0); opacity: 1; }
+.floating-timer .fname { display: block; font-size: 12px; color: rgba(252,243,228,0.65); font-weight: 600; }
+.floating-timer .ftime { font-family: var(--mono); font-size: 25px; font-weight: 700; color: #F3DFAF; }
+.floating-timer button {
+    width: 40px; height: 40px; border-radius: 50%; border: none;
+    background: rgba(252,243,228,0.12); color: #FCF3E4; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+}
+.floating-timer button:hover { background: rgba(252,243,228,0.22); }
+
+.scroll-top {
+    position: fixed; right: 18px; bottom: 18px;
+    width: 42px; height: 42px; border-radius: 50%;
+    background: var(--card); border: 1px solid var(--border);
+    color: var(--cocoa); display: flex; align-items: center; justify-content: center;
+    cursor: pointer; box-shadow: var(--shadow-md);
+    opacity: 0; visibility: hidden; transform: translateY(8px);
+    transition: opacity 0.25s var(--ease), transform 0.25s var(--ease), visibility 0.25s;
+    z-index: 150;
+}
+.scroll-top.visible { opacity: 1; visibility: visible; transform: translateY(0); }
+body.dark .scroll-top { color: var(--gold); }
+
+.toast {
+    position: fixed; left: 16px; right: 16px; bottom: 78px; max-width: 420px; margin: 0 auto;
+    background: var(--cocoa-dark); color: #FCF3E4;
+    padding: 12px 18px; border-radius: var(--r-pill);
+    text-align: center; font-size: 13.5px; font-weight: 600;
+    z-index: 300; pointer-events: none;
+    transform: translateY(90px) scale(0.95); opacity: 0;
+    transition: transform 0.35s var(--ease), opacity 0.3s var(--ease);
+    box-shadow: var(--shadow-lg);
+}
+.toast.show { transform: translateY(0) scale(1); opacity: 1; }
+
+.footer {
+    text-align: center; margin-top: 10px; padding-top: 6px;
+    font-size: 13px; color: var(--ink-faint);
+}
+
+/* ================================================================
+   МОДАЛКА ЗАВЕРШЕНИЯ
+   ================================================================ */
+.modal-bg {
+    position: fixed; inset: 0; background: rgba(20, 12, 6, 0.55);
+    z-index: 2000; display: flex; align-items: center; justify-content: center;
+    padding: 20px; animation: fadeIn 0.3s var(--ease);
+}
+.modal-box {
+    background: var(--card); border-radius: var(--r-lg);
+    padding: 34px 26px; text-align: center; max-width: 340px; width: 100%;
+    box-shadow: var(--shadow-lg);
+    animation: popIn 0.4s cubic-bezier(0.3, 1.4, 0.4, 1);
+}
+.modal-box .mug { width: 64px; height: 64px; margin: 0 auto 12px; color: var(--cocoa); }
+body.dark .modal-box .mug { color: var(--gold); }
+.modal-box h3 { font-family: var(--display); font-size: 26px; font-weight: 700; }
+.modal-box p { color: var(--ink-soft); margin: 8px 0 22px; font-size: 14px; }
+.modal-box button {
+    background: var(--cocoa); border: none; color: #FCF3E4;
+    padding: 12px 30px; border-radius: var(--r-pill); font-weight: 700; font-size: 15px; cursor: pointer;
+}
+body.dark .modal-box button { background: var(--gold); color: #241708; }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes popIn { from { opacity: 0; transform: scale(0.85); } to { opacity: 1; transform: scale(1); } }
+
+:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+
+/* ================================================================
+   ПЕЧАТЬ
+   ================================================================ */
+@media print {
+    #grain, .header-actions, .btn-main, .progress-card, .tabs-head, .control-bar,
+    .floating-timer, .scroll-top, .toast, .icon-btn, .timer-launch, .step-done-btn,
+    .stripe-divider, .row-actions, .portion-ctl { display: none !important; }
+    .tab-panel { display: block !important; padding: 0 !important; }
+    .step { break-inside: avoid; border: 1px solid #ccc; }
+    body { background: #fff; color: #000; }
+}
+</style>
+</head>
+<body>
+
+<div id="grain"></div>
+
+<div class="wrap">
+
+    <!-- ШАПКА -->
+    <header class="header">
+        <div class="brand">
+            <span class="brand-mark">
+                <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M10 16h22v16a8 8 0 0 1-8 8h-6a8 8 0 0 1-8-8V16Z" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round"/>
+                    <path d="M32 20h3a5 5 0 0 1 0 10h-3" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+                    <path d="M15 10c0 2-2 2-2 4M21 9c0 2-2 2-2 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" opacity="0.55"/>
+                </svg>
+            </span>
+            <span class="brand-name">КитКат<em>-кекс</em></span>
+        </div>
+        <div class="header-actions">
+            <button class="icon-btn" id="shareBtn" title="Поделиться"><i class="fas fa-share-nodes"></i></button>
+            <button class="icon-btn" id="printBtn" title="Печать"><i class="fas fa-print"></i></button>
+            <button class="icon-btn" id="themeBtn" title="Тема"><i class="fas fa-moon"></i></button>
+        </div>
+    </header>
+
+    <!-- HERO -->
+    <section class="hero">
+        <div class="hero-mug">
+            <svg viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path class="steam s1" d="M46 26c0 6-6 6-6 12" stroke="currentColor" stroke-width="3" stroke-linecap="round" opacity="0.5"/>
+                <path class="steam s2" d="M60 22c0 6-6 6-6 12" stroke="currentColor" stroke-width="3" stroke-linecap="round" opacity="0.5"/>
+                <path class="steam s3" d="M74 26c0 6-6 6-6 12" stroke="currentColor" stroke-width="3" stroke-linecap="round" opacity="0.5"/>
+                <path d="M24 46h56v34a16 16 0 0 1-16 16H40a16 16 0 0 1-16-16V46Z" fill="currentColor" opacity="0.12"/>
+                <path d="M24 46h56v34a16 16 0 0 1-16 16H40a16 16 0 0 1-16-16V46Z" stroke="currentColor" stroke-width="3.5" stroke-linejoin="round"/>
+                <path d="M80 54h7a11 11 0 0 1 0 22h-7" stroke="currentColor" stroke-width="3.5" stroke-linecap="round"/>
+                <path d="M30 46c2 4 10 4 10 9s-8 5-8 9 8 5 8 9 6 5 6 9" stroke="currentColor" stroke-width="2" opacity="0.35" stroke-linecap="round"/>
+                <rect x="34" y="52" width="10" height="4" rx="1" fill="currentColor" opacity="0.4"/>
+                <rect x="50" y="58" width="10" height="4" rx="1" fill="currentColor" opacity="0.4"/>
+            </svg>
+        </div>
+        <h1>КитКат-кекс в кружке</h1>
+        <p>Мягкий шоколадный кекс с хрустящими кусочками KitKat — от идеи до тарелки за 2 минуты в микроволновке.</p>
+        <div class="stat-row">
+            <span class="stat-chip"><i class="far fa-clock"></i> 5 минут</span>
+            <span class="stat-chip"><i class="fas fa-fire"></i> ~450 ккал</span>
+            <span class="stat-chip"><i class="fas fa-mug-hot"></i> 1 порция</span>
+            <span class="stat-chip"><i class="fas fa-seedling"></i> легко</span>
+        </div>
+        <div class="stripe-divider"></div>
+    </section>
+
+    <button class="btn-main" id="startBtn"><i class="fas fa-utensils"></i> Начать готовить</button>
+
+    <!-- ПРОГРЕСС -->
+    <div class="progress-card">
+        <div class="progress-top"><span>Прогресс</span><span id="progressPercent">0%</span></div>
+        <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+        <div class="progress-note" id="stepsCounter">Выполнено 0 из 6 шагов</div>
+    </div>
+
+    <!-- ВКЛАДКИ -->
+    <div class="tabs">
+        <div class="tabs-head" role="tablist">
+            <button class="tab-btn active" data-tab="tab-recipe" role="tab"><i class="fas fa-list-ol"></i> Рецепт</button>
+            <button class="tab-btn" data-tab="tab-ingredients" role="tab"><i class="fas fa-basket-shopping"></i> Ингредиенты</button>
+            <button class="tab-btn" data-tab="tab-timers" role="tab"><i class="far fa-clock"></i> Таймеры</button>
+            <button class="tab-btn" data-tab="tab-tips" role="tab"><i class="far fa-lightbulb"></i> Советы</button>
+        </div>
+
+        <div class="tab-panel active" id="tab-recipe" role="tabpanel">
+            <div id="stepsContainer"></div>
+        </div>
+
+        <div class="tab-panel" id="tab-ingredients" role="tabpanel">
+            <div class="ing-head">
+                <h2><i class="fas fa-basket-shopping"></i> Ингредиенты</h2>
+                <div class="portion-ctl">
+                    <span class="portion-label">порций</span>
+                    <button id="portMinus" aria-label="Меньше">−</button>
+                    <input type="text" id="portionsInput" value="1" class="portion-input" inputmode="numeric">
+                    <button id="portPlus" aria-label="Больше">+</button>
+                </div>
+            </div>
+            <div id="ingredientsContainer"></div>
+            <div class="row-actions">
+                <button class="btn-line" id="resetIngredientsBtn"><i class="fas fa-rotate-left"></i> Сбросить отметки</button>
+                <button class="btn-line" id="wakeLockBtn"><i class="fas fa-sun"></i> Экран не гаснет</button>
+            </div>
+            <div class="nutri-note">
+                <i class="fas fa-circle-info"></i>
+                <span>Примерная пищевая ценность на 1 порцию: <b>~450&nbsp;ккал</b>, белки ~8&nbsp;г, жиры ~20&nbsp;г, углеводы ~58&nbsp;г. Точные цифры зависят от марки продуктов и размера KitKat.</span>
+            </div>
+        </div>
+
+        <div class="tab-panel" id="tab-timers" role="tabpanel">
+            <div class="timer-status">
+                <i class="fas fa-hourglass-half"></i>
+                <div>
+                    <div class="timer-status-label" id="timerStatusDisplay">Нет активных таймеров</div>
+                    <div class="timer-status-sub">Запускаются из шагов рецепта</div>
+                </div>
+                <div class="timer-status-time" id="timerStatusTime">--:--</div>
+            </div>
+            <div class="timer-hint"><i class="fas fa-circle-info"></i> Здесь видно статус всех таймеров рецепта разом.</div>
+            <div id="timersList"></div>
+        </div>
+
+        <div class="tab-panel" id="tab-tips" role="tabpanel">
+            <div class="tip">
+                <i class="fas fa-mug-saucer"></i>
+                <div><h3>Кружка побольше</h3><p>Берите кружку от 350 мл — тесто поднимается сильно и может убежать через край меньшей.</p></div>
+            </div>
+            <div class="tip">
+                <i class="fas fa-hand"></i>
+                <div><h3>Не перемешивайте слишком долго</h3><p>Достаточно размешать до однородности — от долгого взбивания кекс станет плотным и резиновым.</p></div>
+            </div>
+            <div class="tip">
+                <i class="fas fa-bolt"></i>
+                <div><h3>Мощность микроволновки разная</h3><p>Время в рецепте рассчитано на 800–900 Вт. На слабой печи готовьте с шагом по 10–15 секунд, проверяя середину.</p></div>
+            </div>
+            <div class="tip">
+                <i class="fas fa-layer-group"></i>
+                <div><h3>Кусочки KitKat не топите</h3><p>Часть кусочков оставьте ближе к верху теста — так они не растворятся полностью и останутся хрустящими прожилками.</p></div>
+            </div>
+            <div class="tip">
+                <i class="fas fa-clock-rotate-left"></i>
+                <div><h3>Едят сразу</h3><p>Кекс в кружке вкуснее всего тёплым, в первые 10–15 минут. При хранении текстура становится плотной и суховатой.</p></div>
+            </div>
+
+            <div class="group-title" style="margin-top:22px;">Если чего-то не хватает</div>
+            <div class="swap-grid">
+                <div class="swap-card"><div class="from">Яйцо</div><div class="to"><i class="fas fa-arrow-right"></i>3 ст. л. молока или йогурта</div></div>
+                <div class="swap-card"><div class="from">Сливочное масло</div><div class="to"><i class="fas fa-arrow-right"></i>растительное масло без запаха</div></div>
+                <div class="swap-card"><div class="from">Молоко</div><div class="to"><i class="fas fa-arrow-right"></i>любое растительное молоко</div></div>
+                <div class="swap-card"><div class="from">KitKat</div><div class="to"><i class="fas fa-arrow-right"></i>любой шоколадный батончик с вафлей</div></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- УПРАВЛЕНИЕ -->
+    <div class="control-bar">
+        <label class="check-lbl"><input type="checkbox" id="hideDoneCheckbox"> Скрывать готовые шаги</label>
+        <label class="check-lbl"><input type="checkbox" id="autoCheckbox" checked> Отмечать автоматически</label>
+        <button class="btn-line danger" id="resetBtn"><i class="fas fa-rotate-left"></i> Сбросить всё</button>
+    </div>
+
+    <div class="footer">Приятного аппетита 🍫</div>
+</div>
+
+<div class="floating-timer" id="floatingTimer">
+    <div>
+        <span class="fname" id="floatingTimerName">Таймер</span>
+        <span class="ftime" id="floatingTimerTime">00:00</span>
+    </div>
+    <button id="floatingTimerStop" aria-label="Остановить таймер"><i class="fas fa-stop"></i></button>
+</div>
+
+<button class="scroll-top" id="scrollTop" aria-label="Наверх"><i class="fas fa-arrow-up"></i></button>
+<div id="toast" class="toast"></div>
+
+<script>
+(function () {
+    "use strict";
+
+    // ------------------------------------------------------------
+    // Данные рецепта
+    // ------------------------------------------------------------
+    const INGREDIENTS_BASE = {
+        basePortions: 1,
+        items: [
+            { id: 'ing1', name: 'Мука пшеничная', baseAmount: 2, unit: 'ст. л.', category: 'Сухие' },
+            { id: 'ing2', name: 'Сахар (можно коричневый)', baseAmount: 2, unit: 'ст. л.', category: 'Сухие' },
+            { id: 'ing3', name: 'Какао-порошок без сахара', baseAmount: 2, unit: 'ст. л.', category: 'Сухие' },
+            { id: 'ing4', name: 'Корица молотая', baseAmount: 0.25, unit: 'ч. л.', category: 'Специи' },
+            { id: 'ing5', name: 'Разрыхлитель', baseAmount: 0.25, unit: 'ч. л.', category: 'Специи' },
+            { id: 'ing6', name: 'Ванильный сахар', baseAmount: 0.5, unit: 'ч. л.', category: 'Специи' },
+            { id: 'ing7', name: 'Соль', baseAmount: 0.1, unit: 'ч. л.', category: 'Специи' },
+            { id: 'ing8', name: 'Яйцо крупное', baseAmount: 1, unit: 'шт.', category: 'Жидкие' },
+            { id: 'ing9', name: 'Молоко жирное', baseAmount: 2, unit: 'ст. л.', category: 'Жидкие' },
+            { id: 'ing10', name: 'Масло сливочное, растопленное', baseAmount: 1, unit: 'ст. л.', category: 'Жидкие' },
+            { id: 'ing11', name: 'KitKat, разломанный на кусочки', baseAmount: 4, unit: 'палочки', category: 'Шоколад' },
+            { id: 'ing12', name: 'Шоколадные капли или рубленый шоколад', baseAmount: 1, unit: 'ст. л.', category: 'Шоколад' },
+            { id: 'ing13', name: 'Какао для посыпки', baseAmount: 0.5, unit: 'ч. л.', category: 'Декор' },
+            { id: 'ing14', name: 'Шоколадная глазурь, по желанию', baseAmount: 0.5, unit: 'ст. л.', category: 'Декор' }
+        ]
+    };
+
+    const STEPS = [
+        { id: 1, group: 'Подготовка', title: 'Подготовь кружку и ингредиенты', desc: 'Возьми большую кружку (от 350–400 мл) — тесто поднимется. Убедись, что она подходит для микроволновки.', substeps: ['Выбери кружку объёмом 350–400 мл', 'Проверь, что кружка чистая и сухая', 'Достань все ингредиенты на стол'], timer: { duration: 30, label: '30 сек' }, requires: [] },
+        { id: 2, group: 'Замес', title: 'Смешай сухие ингредиенты', desc: 'В кружке соедини муку, сахар, какао, корицу, ванильный сахар, соль и разрыхлитель.', substeps: ['Отмерь муку и просей её в кружку', 'Добавь сахар, какао, корицу, ваниль и соль', 'Всыпь разрыхлитель и перемешай венчиком'], timer: { duration: 40, label: '40 сек' }, requires: [1] },
+        { id: 3, group: 'Замес', title: 'Добавь жидкие ингредиенты', desc: 'Влей яйцо, молоко и растопленное сливочное масло. Взбей до однородного теста.', substeps: ['Разбей яйцо в кружку — проверь, чтобы не было скорлупы', 'Влей молоко и растопленное масло', 'Перемешай венчиком до гладкой консистенции'], timer: { duration: 45, label: '45 сек' }, requires: [2] },
+        { id: 4, group: 'Шоколадный взрыв', title: 'Добавь кусочки KitKat', desc: 'Вмешай кусочки KitKat и шоколадные капли — часть оставь ближе к верху теста.', substeps: ['Разломай 4 палочки KitKat на кусочки, не в крошку', 'Добавь шоколадные капли или рубленый шоколад', 'Аккуратно перемешай лопаткой'], timer: { duration: 30, label: '30 сек' }, requires: [3] },
+        { id: 5, group: 'Выпечка', title: 'Отправь в микроволновку', desc: 'Готовь на максимальной мощности до подъёма и пружинистости. Время зависит от мощности печи.', substeps: ['Поставь кружку в центр микроволновки', 'Включи максимальную мощность (800–900 Вт)', 'Готовь 1 мин 15 сек — 1 мин 30 сек'], timer: { duration: 90, label: '1 мин 30 сек' }, requires: [4] },
+        { id: 6, group: 'Подача', title: 'Остывание и декор', desc: 'Дай кексу немного остыть — кружка очень горячая. Укрась по желанию и подавай.', substeps: ['Подожди 2 минуты', 'Посыпь какао или полей глазурью', 'Добавь кусочек KitKat сверху'], timer: { duration: 120, label: '2 мин' }, requires: [5] }
+    ];
+
+    const AUTO_RESET_SECONDS = 12 * 3600;
+
+    // ------------------------------------------------------------
+    // Состояние
+    // ------------------------------------------------------------
+    let portions = INGREDIENTS_BASE.basePortions;
+    let checkedIngredients = JSON.parse(localStorage.getItem('kitkat_ingredients') || '[]');
+    let completedSteps = JSON.parse(localStorage.getItem('kitkat_steps') || '[]');
+    let substepsState = JSON.parse(localStorage.getItem('kitkat_substeps') || '{}');
+    let timersState = JSON.parse(localStorage.getItem('kitkat_timers') || '{}');
+    let timerIntervals = {};
+    let currentActiveTimerId = null;
+    let wakeLock = null;
+    let lastActivity = localStorage.getItem('kitkat_last_activity');
+    let isDark = localStorage.getItem('kitkat_theme') === 'dark';
+
+    // ------------------------------------------------------------
+    // Утилиты
+    // ------------------------------------------------------------
+    function isStepAvailable(step) {
+        if (completedSteps.includes(step.id)) return false;
+        if (!step.requires || step.requires.length === 0) return true;
+        return step.requires.every(reqId => completedSteps.includes(reqId));
+    }
+
+    function saveAll() {
+        localStorage.setItem('kitkat_ingredients', JSON.stringify(checkedIngredients));
+        localStorage.setItem('kitkat_steps', JSON.stringify(completedSteps));
+        localStorage.setItem('kitkat_timers', JSON.stringify(timersState));
+        localStorage.setItem('kitkat_substeps', JSON.stringify(substepsState));
+        localStorage.setItem('kitkat_last_activity', Date.now().toString());
+        localStorage.setItem('kitkat_portions', String(portions));
+    }
+
+    function showToast(msg) {
+        let t = document.getElementById('toast');
+        t.textContent = msg;
+        t.classList.add('show');
+        clearTimeout(t._hide);
+        t._hide = setTimeout(() => t.classList.remove('show'), 2500);
+    }
+
+    // Звук таймера через Web Audio API — без внешних файлов
+    let audioCtx = null;
+    function playSound() {
+        try {
+            audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
+            const now = audioCtx.currentTime;
+            [0, 0.28, 0.56].forEach((offset, i) => {
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = 'sine';
+                osc.frequency.value = i === 2 ? 1046.5 : 880;
+                gain.gain.setValueAtTime(0, now + offset);
+                gain.gain.linearRampToValueAtTime(0.22, now + offset + 0.02);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + offset + 0.22);
+                osc.connect(gain).connect(audioCtx.destination);
+                osc.start(now + offset);
+                osc.stop(now + offset + 0.25);
+            });
+        } catch (e) { /* тихо игнорируем — например, если контекст заблокирован */ }
+        if (navigator.vibrate) navigator.vibrate(200);
+    }
+
+    function formatTime(sec) {
+        let m = Math.floor(sec / 60);
+        let s = Math.floor(sec % 60);
+        return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+    }
+
+    function checkAutoReset() {
+        if (lastActivity) {
+            let diff = (Date.now() - parseInt(lastActivity, 10)) / 1000;
+            if (diff >= AUTO_RESET_SECONDS) {
+                completedSteps = [];
+                checkedIngredients = [];
+                substepsState = {};
+                timersState = {};
+                currentActiveTimerId = null;
+                portions = INGREDIENTS_BASE.basePortions;
+                document.getElementById('portionsInput').value = portions;
+                saveAll();
+                showToast('Новый день — новый рецепт!');
+                return true;
+            }
+        }
+        return false;
+    }
+
+    function celebrate() {
+        if (typeof confetti === 'function') {
+            confetti({ particleCount: 160, spread: 90, origin: { y: 0.5 }, colors: ['#5C3620', '#C4913C', '#F3DFAF', '#8B5A3A'] });
+            setTimeout(() => confetti({ particleCount: 90, spread: 70, origin: { y: 0.4 }, colors: ['#C4913C', '#F3DFAF'] }), 280);
+        }
+        let modal = document.createElement('div');
+        modal.className = 'modal-bg';
+        modal.innerHTML = `<div class="modal-box">
+            <svg class="mug" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M24 46h56v34a16 16 0 0 1-16 16H40a16 16 0 0 1-16-16V46Z" fill="currentColor" opacity="0.14"/>
+                <path d="M24 46h56v34a16 16 0 0 1-16 16H40a16 16 0 0 1-16-16V46Z" stroke="currentColor" stroke-width="3.5" stroke-linejoin="round"/>
+                <path d="M80 54h7a11 11 0 0 1 0 22h-7" stroke="currentColor" stroke-width="3.5" stroke-linecap="round"/>
+            </svg>
+            <h3>Кекс готов!</h3>
+            <p>Мягкий, шоколадный, с хрустящим KitKat внутри. Приятного аппетита!</p>
+            <button type="button" data-close>Отлично</button>
+        </div>`;
+        modal.querySelector('[data-close]').addEventListener('click', () => modal.remove());
+        modal.addEventListener('click', (e) => { if (e.target === modal) modal.remove(); });
+        document.body.appendChild(modal);
+        setTimeout(() => { if (modal.parentNode) modal.remove(); }, 7000);
+    }
+
+    // ------------------------------------------------------------
+    // Вкладки
+    // ------------------------------------------------------------
+    function initTabs() {
+        const btns = document.querySelectorAll('.tab-btn');
+        const panels = {
+            'tab-recipe': document.getElementById('tab-recipe'),
+            'tab-ingredients': document.getElementById('tab-ingredients'),
+            'tab-timers': document.getElementById('tab-timers'),
+            'tab-tips': document.getElementById('tab-tips')
+        };
+        btns.forEach(btn => {
+            btn.addEventListener('click', function () {
+                btns.forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                const target = this.dataset.tab;
+                Object.keys(panels).forEach(key => panels[key].classList.toggle('active', key === target));
+            });
+        });
+    }
+
+    // ------------------------------------------------------------
+    // Ингредиенты
+    // ------------------------------------------------------------
+    function renderIngredients() {
+        const container = document.getElementById('ingredientsContainer');
+        let cats = [...new Set(INGREDIENTS_BASE.items.map(i => i.category))];
+        let html = '';
+        cats.forEach(cat => {
+            html += `<div class="group-title">${cat}</div>`;
+            INGREDIENTS_BASE.items.filter(i => i.category === cat).forEach(ing => {
+                let amount = (ing.baseAmount / INGREDIENTS_BASE.basePortions) * portions;
+                let display, unit = ing.unit;
+                if ((unit === 'г' || unit === 'мл') && amount >= 1000) {
+                    display = Math.round((amount / 1000) * 10) / 10;
+                    unit = unit === 'г' ? 'кг' : 'л';
+                } else {
+                    display = Number.isInteger(amount) ? amount : amount.toFixed(1);
+                }
+                let checked = checkedIngredients.includes(ing.id);
+                html += `<div class="ing-item ${checked ? 'checked' : ''}" data-ing-id="${ing.id}">
+                    <input type="checkbox" ${checked ? 'checked' : ''}>
+                    <span class="ing-name">${ing.name}</span>
+                    <span class="ing-amt">${display} ${unit}</span>
+                </div>`;
+            });
+        });
+        container.innerHTML = html;
+        document.querySelectorAll('.ing-item').forEach(el => {
+            let cb = el.querySelector('input');
+            let id = el.dataset.ingId;
+            cb.addEventListener('change', () => {
+                if (cb.checked) {
+                    if (!checkedIngredients.includes(id)) checkedIngredients.push(id);
+                    el.classList.add('checked');
+                } else {
+                    checkedIngredients = checkedIngredients.filter(i => i !== id);
+                    el.classList.remove('checked');
+                }
+                saveAll();
+            });
+            el.addEventListener('click', (e) => { if (e.target !== cb) cb.click(); });
+        });
+    }
+
+    function updatePortions(delta) {
+        portions = Math.min(50, Math.max(1, portions + delta));
+        document.getElementById('portionsInput').value = portions;
+        renderIngredients();
+        saveAll();
+        showToast(`Порций: ${portions}`);
+    }
+
+    function resetIngredients() {
+        if (confirm('Сбросить все отметки ингредиентов?')) {
+            checkedIngredients = [];
+            saveAll();
+            renderIngredients();
+            showToast('Ингредиенты сброшены');
+        }
+    }
+
+    // ------------------------------------------------------------
+    // Шаги и подшаги
+    // ------------------------------------------------------------
+    function allSubstepsDone(stepId) {
+        let step = STEPS.find(s => s.id === stepId);
+        if (!step || !step.substeps) return true;
+        let substate = substepsState[stepId] || {};
+        return step.substeps.every((_, idx) => substate[idx] === true);
+    }
+
+    function updateSubstep(stepId, idx, checked) {
+        if (!substepsState[stepId]) substepsState[stepId] = {};
+        substepsState[stepId][idx] = checked;
+        saveAll();
+        let allDone = allSubstepsDone(stepId);
+        let auto = document.getElementById('autoCheckbox')?.checked;
+        if (allDone && !completedSteps.includes(stepId) && auto) {
+            completedSteps.push(stepId);
+            saveAll();
+            renderSteps();
+            updateProgress();
+            updateTimersTab();
+            showToast(`Шаг ${stepId} выполнен автоматически`);
+            if (completedSteps.length === STEPS.length) celebrate();
+        } else {
+            renderSteps();
+        }
+    }
+
+    function toggleStep(stepId) {
+        if (completedSteps.includes(stepId)) {
+            completedSteps = completedSteps.filter(id => id !== stepId);
+            saveAll();
+            renderSteps();
+            updateProgress();
+            updateTimersTab();
+            showToast(`Шаг ${stepId} отменён`);
+            return;
+        }
+        if (!allSubstepsDone(stepId)) {
+            showToast('Сначала выполните все подшаги');
+            return;
+        }
+        completedSteps.push(stepId);
+        saveAll();
+        renderSteps();
+        updateProgress();
+        updateTimersTab();
+        showToast(`Шаг ${stepId} готов`);
+        if (completedSteps.length === STEPS.length) celebrate();
+    }
+
+    // ------------------------------------------------------------
+    // Таймеры
+    // ------------------------------------------------------------
+    function startTimer(stepId, totalSec) {
+        if (timersState[stepId] && timersState[stepId].status === 'running') return;
+        if (timerIntervals[stepId]) clearInterval(timerIntervals[stepId]);
+        timersState[stepId] = { status: 'running', seconds: totalSec, total: totalSec, timestamp: Date.now() };
+        saveAll();
+        currentActiveTimerId = stepId;
+        updateFloatingTimer();
+        updateTimersTab();
+        showToast(`Таймер запущен (${Math.floor(totalSec / 60)} мин)`);
+        timerIntervals[stepId] = setInterval(() => {
+            let cur = timersState[stepId];
+            if (!cur || cur.status !== 'running') { clearInterval(timerIntervals[stepId]); return; }
+            let elapsed = Math.floor((Date.now() - cur.timestamp) / 1000);
+            cur.seconds = Math.max(0, cur.total - elapsed);
+            if (cur.seconds <= 0) {
+                clearInterval(timerIntervals[stepId]);
+                cur.status = 'stopped';
+                saveAll();
+                playSound();
+                showToast(`Таймер завершён — шаг ${stepId}`);
+                if (currentActiveTimerId === stepId) currentActiveTimerId = null;
+                let auto = document.getElementById('autoCheckbox')?.checked;
+                if (auto && allSubstepsDone(stepId) && !completedSteps.includes(stepId)) {
+                    completedSteps.push(stepId);
+                    saveAll();
+                    updateProgress();
+                    showToast(`Шаг ${stepId} автоматически отмечен`);
+                    if (completedSteps.length === STEPS.length) celebrate();
+                }
+                renderSteps();
+                updateFloatingTimer();
+                updateTimersTab();
+            }
+            updateTimerUI(stepId);
+            updateTimersTab();
+        }, 200);
+        renderSteps();
+    }
+
+    function resumeTimers() {
+        for (let key in timersState) {
+            let state = timersState[key];
+            if (!state || state.status !== 'running' || !state.timestamp) continue;
+            let stepId = parseInt(key, 10);
+            let elapsed = Math.floor((Date.now() - state.timestamp) / 1000);
+            state.seconds = Math.max(0, state.total - elapsed);
+            if (state.seconds <= 0) {
+                state.status = 'stopped';
+                state.seconds = 0;
+                let auto = document.getElementById('autoCheckbox')?.checked;
+                if (auto && allSubstepsDone(stepId) && !completedSteps.includes(stepId)) {
+                    completedSteps.push(stepId);
+                }
+            } else {
+                state.timestamp = Date.now();
+                currentActiveTimerId = stepId;
+                if (timerIntervals[stepId]) clearInterval(timerIntervals[stepId]);
+                timerIntervals[stepId] = setInterval(() => {
+                    let cur = timersState[stepId];
+                    if (!cur || cur.status !== 'running') { clearInterval(timerIntervals[stepId]); return; }
+                    let el = Math.floor((Date.now() - cur.timestamp) / 1000);
+                    cur.seconds = Math.max(0, cur.total - el);
+                    if (cur.seconds <= 0) {
+                        clearInterval(timerIntervals[stepId]);
+                        cur.status = 'stopped';
+                        saveAll();
+                        playSound();
+                        showToast(`Таймер завершён — шаг ${stepId}`);
+                        if (currentActiveTimerId === stepId) currentActiveTimerId = null;
+                        let auto = document.getElementById('autoCheckbox')?.checked;
+                        if (auto && allSubstepsDone(stepId) && !completedSteps.includes(stepId)) {
+                            completedSteps.push(stepId);
+                            saveAll();
+                            updateProgress();
+                            showToast(`Шаг ${stepId} автоматически отмечен`);
+                            if (completedSteps.length === STEPS.length) celebrate();
+                        }
+                        renderSteps();
+                        updateFloatingTimer();
+                        updateTimersTab();
+                    }
+                    updateTimerUI(stepId);
+                    updateTimersTab();
+                }, 200);
+            }
+        }
+        saveAll();
+    }
+
+    function stopTimer(stepId) {
+        let state = timersState[stepId];
+        if (!state) return;
+        state.status = 'stopped';
+        state.seconds = state.total;
+        delete state.timestamp;
+        clearInterval(timerIntervals[stepId]);
+        saveAll();
+        if (currentActiveTimerId === stepId) currentActiveTimerId = null;
+        renderSteps();
+        updateFloatingTimer();
+        updateTimersTab();
+        showToast('Таймер остановлен');
+    }
+
+    function updateTimerUI(stepId) {
+        let state = timersState[stepId];
+        let disp = document.querySelector(`[data-timer-display="${stepId}"]`);
+        if (disp && state) disp.textContent = formatTime(state.seconds);
+        updateFloatingTimer();
+    }
+
+    function updateFloatingTimer() {
+        let fl = document.getElementById('floatingTimer');
+        if (currentActiveTimerId && timersState[currentActiveTimerId] && timersState[currentActiveTimerId].status === 'running') {
+            let st = timersState[currentActiveTimerId];
+            let step = STEPS.find(s => s.id === currentActiveTimerId);
+            document.getElementById('floatingTimerName').textContent = step ? step.title : 'Таймер';
+            document.getElementById('floatingTimerTime').textContent = formatTime(st.seconds);
+            fl.classList.add('visible');
+        } else {
+            fl.classList.remove('visible');
+        }
+    }
+
+    function updateTimersTab() {
+        const statusDisplay = document.getElementById('timerStatusDisplay');
+        const timeDisplay = document.getElementById('timerStatusTime');
+        const list = document.getElementById('timersList');
+
+        if (currentActiveTimerId && timersState[currentActiveTimerId] && timersState[currentActiveTimerId].status === 'running') {
+            let st = timersState[currentActiveTimerId];
+            let step = STEPS.find(s => s.id === currentActiveTimerId);
+            statusDisplay.textContent = `${step ? step.title : 'Таймер'} · шаг ${currentActiveTimerId}`;
+            timeDisplay.textContent = formatTime(st.seconds);
+        } else {
+            statusDisplay.textContent = 'Нет активных таймеров';
+            timeDisplay.textContent = '--:--';
+        }
+
+        let html = '';
+        STEPS.forEach(step => {
+            if (!step.timer) return;
+            let state = timersState[step.id];
+            let status = state?.status === 'running' ? 'идёт' : state?.status === 'stopped' ? 'остановлен' : 'не запущен';
+            let time = state?.seconds !== undefined ? formatTime(state.seconds) : formatTime(step.timer.duration);
+            let isDone = completedSteps.includes(step.id);
+            html += `<div class="timer-row ${isDone ? 'is-done' : ''}">
+                <span class="name">Шаг ${step.id}: ${step.title}</span>
+                <span class="time">${time}</span>
+                <span class="st">${isDone ? 'готов' : status}</span>
+            </div>`;
+        });
+        list.innerHTML = html;
+    }
+
+    // ------------------------------------------------------------
+    // Отрисовка шагов
+    // ------------------------------------------------------------
+    function renderSteps() {
+        let container = document.getElementById('stepsContainer');
+        let curGroup = '', html = '';
+        STEPS.forEach(step => {
+            if (step.group !== curGroup) {
+                curGroup = step.group;
+                html += `<div class="step-group">${step.group}</div>`;
+            }
+            let isDone = completedSteps.includes(step.id);
+            let isLocked = !isStepAvailable(step) && !isDone;
+            let timerState = timersState[step.id];
+            let isTimerActive = timerState && timerState.status === 'running';
+            let substate = substepsState[step.id] || {};
+
+            let substepsHtml = '<div class="substeps">';
+            step.substeps.forEach((sub, idx) => {
+                let ch = substate[idx] === true;
+                let hint = (idx === step.substeps.length - 1 && step.timer) ? `<span class="hint">(${step.timer.label})</span>` : '';
+                substepsHtml += `<div class="substep ${ch ? 'checked' : ''}">
+                    <input type="checkbox" class="substep-cb" data-step="${step.id}" data-idx="${idx}" ${ch ? 'checked' : ''} ${isLocked || isDone ? 'disabled' : ''}>
+                    <span>${sub}</span> ${hint}
+                </div>`;
+            });
+            substepsHtml += '</div>';
+
+            let timerHtml = '';
+            if (step.timer) {
+                let currentSec = timerState?.seconds ?? step.timer.duration;
+                if (!isTimerActive) {
+                    timerHtml = `<button class="timer-launch" data-timer-start="${step.id}" ${isLocked || isDone ? 'disabled' : ''}>
+                        <i class="fas fa-play"></i> Запустить таймер · ${step.timer.label}
+                    </button>`;
+                } else {
+                    timerHtml = `<div class="timer-live">
+                        <span class="t" data-timer-display="${step.id}">${formatTime(currentSec)}</span>
+                        <button class="timer-stop-btn" data-timer-stop="${step.id}"><i class="fas fa-stop"></i></button>
+                    </div>`;
+                }
+            }
+
+            html += `<div class="step ${isDone ? 'done' : ''} ${isLocked ? 'locked' : ''}" data-step-id="${step.id}">
+                <div class="step-body">
+                    <div class="step-top">
+                        <div class="step-num">${step.id}</div>
+                        <div class="step-title">${step.title}</div>
+                        ${step.timer ? `<span class="step-badge"><i class="far fa-clock"></i> ${step.timer.label}</span>` : ''}
+                    </div>
+                    <div class="step-desc">${step.desc}</div>
+                    ${substepsHtml}
+                    ${timerHtml}
+                </div>
+                <button class="step-done-btn" data-step-toggle="${step.id}" ${isDone || isLocked ? 'disabled' : ''}>
+                    ${isDone ? '✓ Готово' : 'Отметить выполненным'}
+                </button>
+            </div>`;
+        });
+        container.innerHTML = html;
+
+        document.querySelectorAll('[data-step-toggle]').forEach(btn =>
+            btn.addEventListener('click', () => toggleStep(parseInt(btn.dataset.stepToggle, 10))));
+        document.querySelectorAll('[data-timer-start]').forEach(btn =>
+            btn.addEventListener('click', () => {
+                let sid = parseInt(btn.dataset.timerStart, 10);
+                let s = STEPS.find(s => s.id === sid);
+                if (s?.timer) startTimer(sid, s.timer.duration);
+            }));
+        document.querySelectorAll('[data-timer-stop]').forEach(btn =>
+            btn.addEventListener('click', () => stopTimer(parseInt(btn.dataset.timerStop, 10))));
+        document.querySelectorAll('.substep-cb').forEach(cb =>
+            cb.addEventListener('change', function () {
+                updateSubstep(parseInt(this.dataset.step, 10), parseInt(this.dataset.idx, 10), this.checked);
+            }));
+
+        updateProgress();
+        updateTimersTab();
+    }
+
+    function updateProgress() {
+        let percent = Math.round((completedSteps.length / STEPS.length) * 100);
+        document.getElementById('progressFill').style.width = `${percent}%`;
+        document.getElementById('progressPercent').textContent = `${percent}%`;
+        document.getElementById('stepsCounter').textContent = `Выполнено ${completedSteps.length} из ${STEPS.length} шагов`;
+        let hide = document.getElementById('hideDoneCheckbox')?.checked;
+        document.querySelectorAll('.step').forEach(card => {
+            let stepId = parseInt(card.dataset.stepId, 10);
+            card.classList.toggle('hidden', !!(hide && completedSteps.includes(stepId)));
+        });
+    }
+
+    function resetAll() {
+        if (confirm('Сбросить весь прогресс приготовления?')) {
+            for (let id in timerIntervals) clearInterval(timerIntervals[id]);
+            completedSteps = [];
+            checkedIngredients = [];
+            substepsState = {};
+            timersState = {};
+            currentActiveTimerId = null;
+            portions = INGREDIENTS_BASE.basePortions;
+            document.getElementById('portionsInput').value = portions;
+            saveAll();
+            renderIngredients();
+            renderSteps();
+            updateTimersTab();
+            document.getElementById('floatingTimer').classList.remove('visible');
+            showToast('Прогресс сброшен');
+        }
+    }
+
+    // ------------------------------------------------------------
+    // Тема, wake lock, шаринг, печать
+    // ------------------------------------------------------------
+    function applyTheme() {
+        document.body.classList.toggle('dark', isDark);
+        document.getElementById('themeBtn').innerHTML = isDark ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
+    }
+
+    async function initWakeLock() {
+        let btn = document.getElementById('wakeLockBtn');
+        if (!('wakeLock' in navigator)) { btn.style.display = 'none'; return; }
+        btn.addEventListener('click', async () => {
+            if (!wakeLock) {
+                try {
+                    wakeLock = await navigator.wakeLock.request('screen');
+                    btn.innerHTML = '<i class="fas fa-check"></i> Экран активен';
+                    wakeLock.addEventListener('release', () => {
+                        wakeLock = null;
+                        btn.innerHTML = '<i class="fas fa-sun"></i> Экран не гаснет';
+                    });
+                } catch (e) {
+                    showToast('Не удалось закрепить экран');
+                }
+            } else {
+                try { wakeLock.release(); } catch (e) { /* уже освобождён */ }
+            }
+        });
+    }
+
+    function initShare() {
+        document.getElementById('shareBtn').addEventListener('click', async () => {
+            let data = { title: 'КитКат-кекс в кружке', text: 'Шоколадный кекс в кружке за 2 минуты — интерактивный рецепт с таймерами', url: location.href };
+            if (navigator.share) {
+                try { await navigator.share(data); } catch (e) { /* пользователь отменил */ }
+            } else if (navigator.clipboard) {
+                try { await navigator.clipboard.writeText(location.href); showToast('Ссылка скопирована'); }
+                catch (e) { showToast('Не удалось скопировать ссылку'); }
+            }
+        });
+        document.getElementById('printBtn').addEventListener('click', () => window.print());
+    }
+
+    // ------------------------------------------------------------
+    // Инициализация
+    // ------------------------------------------------------------
+    function init() {
+        checkAutoReset();
+        let savedPortions = localStorage.getItem('kitkat_portions');
+        if (savedPortions) portions = parseInt(savedPortions, 10) || 1;
+        document.getElementById('portionsInput').value = portions;
+
+        applyTheme();
+        initTabs();
+        renderIngredients();
+        resumeTimers();
+        renderSteps();
+        updateTimersTab();
+
+        document.getElementById('portMinus').addEventListener('click', () => updatePortions(-1));
+        document.getElementById('portPlus').addEventListener('click', () => updatePortions(1));
+        document.getElementById('portionsInput').addEventListener('change', function () {
+            let v = parseInt(this.value, 10) || INGREDIENTS_BASE.basePortions;
+            v = Math.min(50, Math.max(1, v));
+            portions = v;
+            this.value = v;
+            renderIngredients();
+            saveAll();
+            showToast(`Порций: ${portions}`);
+        });
+        document.getElementById('resetBtn').addEventListener('click', resetAll);
+        document.getElementById('resetIngredientsBtn').addEventListener('click', resetIngredients);
+        document.getElementById('hideDoneCheckbox').addEventListener('change', () => updateProgress());
+        document.getElementById('startBtn').addEventListener('click', () => {
+            document.querySelector('[data-tab="tab-recipe"]')?.click();
+            setTimeout(() => {
+                let first = document.querySelector('.step:not(.done):not(.locked)');
+                if (first) first.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }, 100);
+        });
+        document.getElementById('scrollTop').addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+        document.getElementById('floatingTimerStop').addEventListener('click', () => {
+            if (currentActiveTimerId) stopTimer(currentActiveTimerId);
+        });
+        document.getElementById('themeBtn').addEventListener('click', () => {
+            isDark = !isDark;
+            localStorage.setItem('kitkat_theme', isDark ? 'dark' : 'light');
+            applyTheme();
+        });
+        window.addEventListener('scroll', () => {
+            document.getElementById('scrollTop').classList.toggle('visible', window.scrollY > 240);
+        });
+
+        initShare();
+        initWakeLock();
+        setInterval(() => { updateFloatingTimer(); updateTimersTab(); }, 500);
+    }
+
+    init();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,943 @@
+﻿<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🐜 Муравьиный Рецепт Яиц</title>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Press Start 2P', cursive;
+            background-color: #F8FAE4;
+            color: #333;
+            line-height: 1.5;
+            padding: 12px;
+            background-image:
+                linear-gradient(45deg, #D0DD97 25%, transparent 25%),
+                linear-gradient(-45deg, #D0DD97 25%, transparent 25%),
+                linear-gradient(45deg, transparent 75%, #D0DD97 75%),
+                linear-gradient(-45deg, transparent 75%, #D0DD97 75%);
+            background-size: 16px 16px;
+            background-position: 0 0, 0 8px, 8px -8px, -8px 0px;
+        }
+
+        .container {
+            max-width: 820px;
+            margin: 0 auto;
+            background-color: #F8FAE4;
+            border: 6px solid #658361;
+            box-shadow: 8px 8px 0 rgba(101, 131, 97, 0.3);
+            padding: 14px;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32"><rect width="16" height="16" fill="%23D0DD97" opacity="0.4"/><rect x="16" y="16" width="16" height="16" fill="%23D0DD97" opacity="0.4"/></svg>');
+        }
+
+        header {
+            text-align: center;
+            padding: 14px;
+            background-color: #658361;
+            border: 3px solid #4a6b47;
+            margin-bottom: 14px;
+            color: #F8FAE4;
+            position: relative;
+        }
+
+        h1 {
+            font-size: 18px;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+        }
+
+        .animations-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 28px;
+            flex-wrap: wrap;
+            margin-top: 6px;
+        }
+
+        .loader-squares {
+            position: relative;
+            width: 44px;
+            height: 44px;
+        }
+
+        .loader-squares .box1,
+        .loader-squares .box2,
+        .loader-squares .box3 {
+            border: 6px solid #FFFFFF;
+            box-sizing: border-box;
+            position: absolute;
+            display: block;
+        }
+
+        .loader-squares .box1 {
+            width: 44px;
+            height: 18px;
+            margin-top: 26px;
+            margin-left: 0px;
+            animation: abox1 4s 1s forwards ease-in-out infinite;
+        }
+        .loader-squares .box2 {
+            width: 18px;
+            height: 18px;
+            margin-top: 0px;
+            margin-left: 0px;
+            animation: abox2 4s 1s forwards ease-in-out infinite;
+        }
+        .loader-squares .box3 {
+            width: 18px;
+            height: 18px;
+            margin-top: 0px;
+            margin-left: 26px;
+            animation: abox3 4s 1s forwards ease-in-out infinite;
+        }
+
+        @keyframes abox1 {
+            0% { width: 44px; height: 18px; margin-top: 26px; margin-left: 0px; }
+            12.5% { width: 18px; height: 18px; margin-top: 26px; margin-left: 0px; }
+            25% { width: 18px; height: 18px; margin-top: 26px; margin-left: 0px; }
+            37.5% { width: 18px; height: 18px; margin-top: 26px; margin-left: 0px; }
+            50% { width: 18px; height: 18px; margin-top: 26px; margin-left: 0px; }
+            62.5% { width: 18px; height: 18px; margin-top: 26px; margin-left: 0px; }
+            75% { width: 18px; height: 44px; margin-top: 0px; margin-left: 0px; }
+            87.5% { width: 18px; height: 18px; margin-top: 0px; margin-left: 0px; }
+            100% { width: 18px; height: 18px; margin-top: 0px; margin-left: 0px; }
+        }
+        @keyframes abox2 {
+            0% { width: 18px; height: 18px; margin-top: 0px; margin-left: 0px; }
+            12.5% { width: 18px; height: 18px; margin-top: 0px; margin-left: 0px; }
+            25% { width: 18px; height: 18px; margin-top: 0px; margin-left: 0px; }
+            37.5% { width: 18px; height: 18px; margin-top: 0px; margin-left: 0px; }
+            50% { width: 44px; height: 18px; margin-top: 0px; margin-left: 0px; }
+            62.5% { width: 18px; height: 18px; margin-top: 0px; margin-left: 26px; }
+            75% { width: 18px; height: 18px; margin-top: 0px; margin-left: 26px; }
+            87.5% { width: 18px; height: 18px; margin-top: 0px; margin-left: 26px; }
+            100% { width: 18px; height: 18px; margin-top: 0px; margin-left: 26px; }
+        }
+        @keyframes abox3 {
+            0% { width: 18px; height: 18px; margin-top: 0px; margin-left: 26px; }
+            12.5% { width: 18px; height: 18px; margin-top: 0px; margin-left: 26px; }
+            25% { width: 18px; height: 44px; margin-top: 0px; margin-left: 26px; }
+            37.5% { width: 18px; height: 18px; margin-top: 26px; margin-left: 26px; }
+            50% { width: 18px; height: 18px; margin-top: 26px; margin-left: 26px; }
+            62.5% { width: 18px; height: 18px; margin-top: 26px; margin-left: 26px; }
+            75% { width: 18px; height: 18px; margin-top: 26px; margin-left: 26px; }
+            87.5% { width: 18px; height: 18px; margin-top: 26px; margin-left: 26px; }
+            100% { width: 44px; height: 18px; margin-top: 26px; margin-left: 0px; }
+        }
+
+        .loader-bounce {
+            position: relative;
+            width: 48px;
+            height: 36px;
+        }
+
+        .loader-bounce:before {
+            content: "";
+            position: absolute;
+            bottom: 12px;
+            left: 20px;
+            height: 12px;
+            width: 12px;
+            border-radius: 50%;
+            background: #FFFFFF;
+            animation: loading-bounce 0.5s ease-in-out infinite alternate;
+        }
+
+        .loader-bounce:after {
+            content: "";
+            position: absolute;
+            right: 0;
+            top: 0;
+            height: 3px;
+            width: 18px;
+            border-radius: 2px;
+            box-shadow: 0 3px 0 #FFFFFF, -14px 20px 0 #FFFFFF, -28px 38px 0 #FFFFFF;
+            animation: loading-step 1s ease-in-out infinite;
+        }
+
+        @keyframes loading-bounce {
+            0% { transform: scale(1, 0.7); }
+            40% { transform: scale(0.8, 1.2); }
+            60% { transform: scale(1, 1); }
+            100% { bottom: 56px; }
+        }
+        @keyframes loading-step {
+            0% { box-shadow: 0 3px 0 rgba(0,0,0,0), 0 3px 0 #FFFFFF, -14px 20px 0 #FFFFFF, -28px 38px 0 #FFFFFF; }
+            100% { box-shadow: 0 3px 0 #FFFFFF, -14px 20px 0 #FFFFFF, -28px 38px 0 #FFFFFF, -28px 38px 0 rgba(0,0,0,0); }
+        }
+
+        .section {
+            margin-bottom: 20px;
+            padding: 12px;
+            border: 3px solid #D0DD97;
+            background-color: #F8FAE4;
+        }
+
+        .section-title {
+            font-size: 13px;
+            color: #658361;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .choice-container {
+            text-align: center;
+            padding: 14px;
+        }
+
+        .choice-question {
+            font-size: 14px;
+            margin-bottom: 14px;
+            color: #658361;
+        }
+
+        .choice-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 8px;
+            margin-top: 14px;
+        }
+
+        .choice-btn {
+            background-color: #658361;
+            color: #F8FAE4;
+            border: none;
+            padding: 10px 8px;
+            margin: 4px;
+            cursor: pointer;
+            font-family: inherit;
+            border: 3px solid #4a6b47;
+            font-size: 10px;
+            transition: 0.2s;
+            line-height: 1.6;
+        }
+
+        .choice-btn:hover {
+            background-color: #4a6b47;
+        }
+
+        .choice-btn.selected {
+            background-color: #F9DE79;
+            border-color: #d4b84a;
+            color: #2d3d2a;
+        }
+
+        .choice-btn .sub {
+            font-size: 8px;
+            opacity: 0.85;
+            display: block;
+            margin-top: 2px;
+        }
+
+        .btn {
+            background-color: #658361;
+            color: #F8FAE4;
+            border: none;
+            padding: 8px 14px;
+            margin: 4px;
+            cursor: pointer;
+            font-family: inherit;
+            border: 3px solid #4a6b47;
+            font-size: 11px;
+            transition: 0.2s;
+        }
+
+        .btn:hover {
+            background-color: #4a6b47;
+        }
+
+        .btn-large {
+            background-color: #F9DE79;
+            border: 3px solid #d4b84a;
+            color: #2d3d2a;
+            padding: 12px 24px;
+            font-size: 13px;
+            margin-top: 16px;
+        }
+
+        .btn-large:hover {
+            background-color: #d4b84a;
+            color: #F8FAE4;
+        }
+
+        .back-btn {
+            background-color: #D0DD97;
+            border: 3px solid #9aad6a;
+            color: #2d3d2a;
+            margin-top: 8px;
+        }
+
+        .back-btn:hover {
+            background-color: #9aad6a;
+            color: #F8FAE4;
+        }
+
+        .recipe-step {
+            background-color: #F8FAE4;
+            padding: 12px;
+            margin-bottom: 12px;
+            border-left: 4px solid #D0DD97;
+            display: none;
+        }
+
+        .recipe-step.active {
+            display: block;
+        }
+
+        .ingredients {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 6px;
+            margin-bottom: 14px;
+        }
+
+        .ingredient {
+            background-color: #D0DD97;
+            padding: 6px 8px;
+            border: 2px solid #658361;
+            text-align: center;
+            font-size: 11px;
+            color: #2d3d2a;
+        }
+
+        .step {
+            background-color: #D0DD97;
+            padding: 8px 10px;
+            margin-bottom: 8px;
+            border-left: 3px solid #658361;
+            font-size: 11px;
+            line-height: 1.6;
+            color: #2d3d2a;
+        }
+
+        .step strong {
+            color: #4a6b47;
+        }
+
+        .timer-controls {
+            text-align: center;
+            margin: 14px 0;
+        }
+
+        .timer-display {
+            font-size: 34px;
+            text-align: center;
+            margin: 12px 0;
+            color: #658361;
+        }
+
+        .success-message {
+            background-color: #D0DD97;
+            border: 4px solid #658361;
+            padding: 14px;
+            text-align: center;
+            margin: 14px 0;
+            display: none;
+        }
+
+        .success-message.visible {
+            display: block;
+        }
+
+        .success-message h2 {
+            font-size: 16px;
+            color: #2d3d2a;
+        }
+        .success-message p {
+            color: #2d3d2a;
+        }
+
+        .emoji {
+            font-size: 20px;
+            display: block;
+            margin: 6px 0;
+        }
+
+        .animation-label {
+            font-size: 8px;
+            color: #F8FAE4;
+            text-align: center;
+            margin-top: 4px;
+            opacity: 0.8;
+            letter-spacing: 0.5px;
+        }
+
+        .animation-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .batch-timer-info {
+            font-size: 11px;
+            color: #658361;
+            text-align: center;
+            margin: 10px 0;
+            padding: 8px;
+            background: #E8EFD5;
+            border: 2px dashed #658361;
+        }
+
+        .selected-info {
+            text-align: center;
+            font-size: 11px;
+            color: #658361;
+            padding: 10px;
+            background: #E8EFD5;
+            border-radius: 4px;
+            margin-top: 10px;
+        }
+
+        @media (max-width: 600px) {
+            .container { padding: 8px; border-width: 4px; }
+            h1 { font-size: 14px; }
+            .choice-buttons { grid-template-columns: 1fr 1fr; }
+            .choice-btn { font-size: 9px; padding: 8px; }
+            .timer-display { font-size: 28px; }
+            .btn-large { padding: 8px 14px; font-size: 11px; }
+            .animations-container { gap: 14px; flex-direction: row; flex-wrap: wrap; justify-content: center; }
+            .loader-squares { width: 36px; height: 36px; }
+            .loader-squares .box1, .loader-squares .box2, .loader-squares .box3 { border-width: 5px; }
+            .loader-squares .box1 { width: 36px; height: 14px; margin-top: 22px; animation: abox1-mobile 4s 1s forwards ease-in-out infinite; }
+            .loader-squares .box2 { width: 14px; height: 14px; animation: abox2-mobile 4s 1s forwards ease-in-out infinite; }
+            .loader-squares .box3 { width: 14px; height: 14px; margin-left: 22px; animation: abox3-mobile 4s 1s forwards ease-in-out infinite; }
+            @keyframes abox1-mobile {
+                0% { width: 36px; height: 14px; margin-top: 22px; margin-left: 0px; }
+                12.5% { width: 14px; height: 14px; margin-top: 22px; margin-left: 0px; }
+                25% { width: 14px; height: 14px; margin-top: 22px; margin-left: 0px; }
+                37.5% { width: 14px; height: 14px; margin-top: 22px; margin-left: 0px; }
+                50% { width: 14px; height: 14px; margin-top: 22px; margin-left: 0px; }
+                62.5% { width: 14px; height: 14px; margin-top: 22px; margin-left: 0px; }
+                75% { width: 14px; height: 36px; margin-top: 0px; margin-left: 0px; }
+                87.5% { width: 14px; height: 14px; margin-top: 0px; margin-left: 0px; }
+                100% { width: 14px; height: 14px; margin-top: 0px; margin-left: 0px; }
+            }
+            @keyframes abox2-mobile {
+                0% { width: 14px; height: 14px; margin-top: 0px; margin-left: 0px; }
+                12.5% { width: 14px; height: 14px; margin-top: 0px; margin-left: 0px; }
+                25% { width: 14px; height: 14px; margin-top: 0px; margin-left: 0px; }
+                37.5% { width: 14px; height: 14px; margin-top: 0px; margin-left: 0px; }
+                50% { width: 36px; height: 14px; margin-top: 0px; margin-left: 0px; }
+                62.5% { width: 14px; height: 14px; margin-top: 0px; margin-left: 22px; }
+                75% { width: 14px; height: 14px; margin-top: 0px; margin-left: 22px; }
+                87.5% { width: 14px; height: 14px; margin-top: 0px; margin-left: 22px; }
+                100% { width: 14px; height: 14px; margin-top: 0px; margin-left: 22px; }
+            }
+            @keyframes abox3-mobile {
+                0% { width: 14px; height: 14px; margin-top: 0px; margin-left: 22px; }
+                12.5% { width: 14px; height: 14px; margin-top: 0px; margin-left: 22px; }
+                25% { width: 14px; height: 36px; margin-top: 0px; margin-left: 22px; }
+                37.5% { width: 14px; height: 14px; margin-top: 22px; margin-left: 22px; }
+                50% { width: 14px; height: 14px; margin-top: 22px; margin-left: 22px; }
+                62.5% { width: 14px; height: 14px; margin-top: 22px; margin-left: 22px; }
+                75% { width: 14px; height: 14px; margin-top: 22px; margin-left: 22px; }
+                87.5% { width: 14px; height: 14px; margin-top: 22px; margin-left: 22px; }
+                100% { width: 36px; height: 14px; margin-top: 22px; margin-left: 0px; }
+            }
+            .loader-bounce { width: 36px; height: 28px; }
+            .loader-bounce:before { bottom: 10px; left: 15px; height: 10px; width: 10px; animation: loading-bounce-mobile 0.5s ease-in-out infinite alternate; }
+            .loader-bounce:after { height: 3px; width: 14px; box-shadow: 0 2px 0 #FFFFFF, -10px 14px 0 #FFFFFF, -20px 28px 0 #FFFFFF; animation: loading-step-mobile 1s ease-in-out infinite; }
+            @keyframes loading-bounce-mobile {
+                0% { transform: scale(1, 0.7); }
+                40% { transform: scale(0.8, 1.2); }
+                60% { transform: scale(1, 1); }
+                100% { bottom: 40px; }
+            }
+            @keyframes loading-step-mobile {
+                0% { box-shadow: 0 2px 0 rgba(0,0,0,0), 0 2px 0 #FFFFFF, -10px 14px 0 #FFFFFF, -20px 28px 0 #FFFFFF; }
+                100% { box-shadow: 0 2px 0 #FFFFFF, -10px 14px 0 #FFFFFF, -20px 28px 0 #FFFFFF, -20px 28px 0 rgba(0,0,0,0); }
+            }
+            .ingredients { grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); }
+            .ingredient { font-size: 10px; padding: 4px 6px; }
+            .step { font-size: 10px; padding: 6px 8px; }
+            .section-title { font-size: 11px; }
+            .choice-question { font-size: 12px; }
+            .animation-label { font-size: 6px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🐜 МУРАВЬИНЫЙ РЕЦЕПТ ЯИЦ</h1>
+            <div class="animations-container">
+                <div class="animation-item">
+                    <div class="loader-squares">
+                        <div class="box1"></div>
+                        <div class="box2"></div>
+                        <div class="box3"></div>
+                    </div>
+                    <div class="animation-label">ПЕРЕМЕШИВАНИЕ</div>
+                </div>
+                <div class="animation-item">
+                    <div class="loader-bounce"></div>
+                    <div class="animation-label">КИПЕНИЕ</div>
+                </div>
+            </div>
+        </header>
+
+        <div id="choice-screen" class="section choice-container">
+            <div class="section-title">❓ КАКОЕ ЯЙЦО ТЕБЕ НУЖНО?</div>
+            <p class="choice-question">Выбери яйца, которые хочешь приготовить (можно несколько):</p>
+
+            <div class="choice-buttons" id="eggButtons">
+                <button class="choice-btn" data-type="liquid">
+                    💧 Жидкий желток
+                    <span class="sub">6 мин — для тостов, завтрака, есть ложкой</span>
+                </button>
+                <button class="choice-btn" data-type="creamy">
+                    🧈 Кремовый
+                    <span class="sub">7 мин — для рамена, лапши, риса</span>
+                </button>
+                <button class="choice-btn" data-type="soft">
+                    🟠 Мягкий
+                    <span class="sub">8 мин — для бутербродов, салатов</span>
+                </button>
+                <button class="choice-btn" data-type="almost_hard">
+                    🟡 Почти вкрутую
+                    <span class="sub">9 мин — без жидкого центра</span>
+                </button>
+                <button class="choice-btn" data-type="hard">
+                    🟡 Вкрутую
+                    <span class="sub">11 мин — для Оливье, окрошки, фаршировки</span>
+                </button>
+                <button class="choice-btn" data-type="ants">
+                    🐜 Для муравьёв
+                    <span class="sub">11 мин — специальный муравьиный рецепт</span>
+                </button>
+            </div>
+
+            <div class="selected-info" id="selectedInfo">
+                <span id="selectedText">Ничего не выбрано</span>
+            </div>
+
+            <button class="btn btn-large" onclick="cookBasket()" style="width:100%;">
+                🍳 ПРИГОТОВИТЬ ВЫБРАННЫЕ
+            </button>
+        </div>
+
+        <!-- РЕЦЕПТЫ -->
+        <div id="recipe-liquid" class="recipe-step">
+            <div class="section-title">💧 РЕЦЕПТ ДЛЯ ЖИДКОГО ЖЕЛТКА</div>
+            <div class="section">
+                <h2 class="section-title">🥚 ЧТО НУЖНО</h2>
+                <div class="ingredients">
+                    <div class="ingredient">• Яйца С0<br><span style="font-size:10px;">(сколько нужно)</span></div>
+                    <div class="ingredient">• Обычная питьевая вода</div>
+                    <div class="ingredient">• Кастрюля</div>
+                    <div class="ingredient">• Ложка</div>
+                    <div class="ingredient">• Холодная вода или лёд</div>
+                </div>
+            </div>
+            <div class="section">
+                <h2 class="section-title">🍳 ИНСТРУКЦИЯ</h2>
+                <div class="step"><strong>1. ПОДГОТОВЬ</strong><br>Достань яйца из холодильника.<br>Возьми кастрюлю.<br>Положи яйца в кастрюлю в один слой.<br>Налей обычную воду так, чтобы она полностью покрывала яйца.</div>
+                <div class="step"><strong>2. ПОСТАВЬ НА ПЛИТУ</strong><br>Поставь кастрюлю на подходящую конфорку.<br>Включи плиту.<br>Жди, пока вода закипит.</div>
+                <div class="step"><strong>3. ВАРИТЬ 6 МИНУТ</strong><br>Как только вода закипела, начинай отсчитывать 6 минут.</div>
+                <div class="step"><strong>4. ПОСЛЕ ВАРКИ</strong><br>Когда прошло 6 минут:<br>выключи плиту → достань яйца → положи в холодную воду.<br>Оставь на 5–10 минут.</div>
+            </div>
+            <div class="timer-controls">
+                <div class="timer-display" id="timer-liquid">00:00</div>
+                <button class="btn" onclick="setTimer('liquid', 6)">ЗАПУСТИТЬ ТАЙМЕР 6 МИНУТ</button>
+            </div>
+            <div class="section">
+                <div class="section-title">🎯 ГДЕ ИСПОЛЬЗОВАТЬ</div>
+                <p style="color:#658361;">→ тост<br>→ завтрак<br>→ есть ложкой</p>
+            </div>
+            <button class="btn back-btn" onclick="goBack()">← НАЗАД К ВЫБОРУ</button>
+        </div>
+
+        <div id="recipe-creamy" class="recipe-step">
+            <div class="section-title">🧈 РЕЦЕПТ ДЛЯ КРЕМОВОГО ЖЕЛТКА</div>
+            <div class="section">
+                <h2 class="section-title">🥚 ЧТО НУЖНО</h2>
+                <div class="ingredients">
+                    <div class="ingredient">• Яйца С0<br><span style="font-size:10px;">(сколько нужно)</span></div>
+                    <div class="ingredient">• Обычная питьевая вода</div>
+                    <div class="ingredient">• Кастрюля</div>
+                    <div class="ingredient">• Ложка</div>
+                    <div class="ingredient">• Холодная вода или лёд</div>
+                </div>
+            </div>
+            <div class="section">
+                <h2 class="section-title">🍳 ИНСТРУКЦИЯ</h2>
+                <div class="step"><strong>1. ПОДГОТОВЬ</strong><br>Достань яйца из холодильника.<br>Возьми кастрюлю.<br>Положи яйца в кастрюлю в один слой.<br>Налей обычную воду так, чтобы она полностью покрывала яйца.</div>
+                <div class="step"><strong>2. ПОСТАВЬ НА ПЛИТУ</strong><br>Поставь кастрюлю на подходящую конфорку.<br>Включи плиту.<br>Жди, пока вода закипит.</div>
+                <div class="step"><strong>3. ВАРИТЬ 6½–7 МИНУТ</strong><br>Как только вода закипела, начинай отсчитывать 6½–7 минут.</div>
+                <div class="step"><strong>4. ПОСЛЕ ВАРКИ</strong><br>Когда прошло 7 минут:<br>выключи плиту → достань яйца → положи в холодную воду.<br>Оставь на 5–10 минут.</div>
+            </div>
+            <div class="timer-controls">
+                <div class="timer-display" id="timer-creamy">00:00</div>
+                <button class="btn" onclick="setTimer('creamy', 7)">ЗАПУСТИТЬ ТАЙМЕР 7 МИНУТ</button>
+            </div>
+            <div class="section">
+                <div class="section-title">🎯 ГДЕ ИСПОЛЬЗОВАТЬ</div>
+                <p style="color:#658361;">→ рамен<br>→ лапша<br>→ рис<br>→ кремовый желток</p>
+            </div>
+            <button class="btn back-btn" onclick="goBack()">← НАЗАД К ВЫБОРУ</button>
+        </div>
+
+        <div id="recipe-soft" class="recipe-step">
+            <div class="section-title">🟠 РЕЦЕПТ ДЛЯ МЯГКОГО ЖЕЛТКА</div>
+            <div class="section">
+                <h2 class="section-title">🥚 ЧТО НУЖНО</h2>
+                <div class="ingredients">
+                    <div class="ingredient">• Яйца С0<br><span style="font-size:10px;">(сколько нужно)</span></div>
+                    <div class="ingredient">• Обычная питьевая вода</div>
+                    <div class="ingredient">• Кастрюля</div>
+                    <div class="ingredient">• Ложка</div>
+                    <div class="ingredient">• Холодная вода или лёд</div>
+                </div>
+            </div>
+            <div class="section">
+                <h2 class="section-title">🍳 ИНСТРУКЦИЯ</h2>
+                <div class="step"><strong>1. ПОДГОТОВЬ</strong><br>Достань яйца из холодильника.<br>Возьми кастрюлю.<br>Положи яйца в кастрюлю в один слой.<br>Налей обычную воду так, чтобы она полностью покрывала яйца.</div>
+                <div class="step"><strong>2. ПОСТАВЬ НА ПЛИТУ</strong><br>Поставь кастрюлю на подходящую конфорку.<br>Включи плиту.<br>Жди, пока вода закипит.</div>
+                <div class="step"><strong>3. ВАРИТЬ 8 МИНУТ</strong><br>Как только вода закипела, начинай отсчитывать 8 минут.</div>
+                <div class="step"><strong>4. ПОСЛЕ ВАРКИ</strong><br>Когда прошло 8 минут:<br>выключи плиту → достань яйца → положи в холодную воду.<br>Оставь на 5–10 минут.</div>
+            </div>
+            <div class="timer-controls">
+                <div class="timer-display" id="timer-soft">00:00</div>
+                <button class="btn" onclick="setTimer('soft', 8)">ЗАПУСТИТЬ ТАЙМЕР 8 МИНУТ</button>
+            </div>
+            <div class="section">
+                <div class="section-title">🎯 ГДЕ ИСПОЛЬЗОВАТЬ</div>
+                <p style="color:#658361;">→ бутерброды<br>→ салаты<br>→ мягкий желток</p>
+            </div>
+            <button class="btn back-btn" onclick="goBack()">← НАЗАД К ВЫБОРУ</button>
+        </div>
+
+        <div id="recipe-almost_hard" class="recipe-step">
+            <div class="section-title">🟡 РЕЦЕПТ ДЛЯ ПОЧТИ ВКРУТУЮ</div>
+            <div class="section">
+                <h2 class="section-title">🥚 ЧТО НУЖНО</h2>
+                <div class="ingredients">
+                    <div class="ingredient">• Яйца С0<br><span style="font-size:10px;">(сколько нужно)</span></div>
+                    <div class="ingredient">• Обычная питьевая вода</div>
+                    <div class="ingredient">• Кастрюля</div>
+                    <div class="ingredient">• Ложка</div>
+                    <div class="ingredient">• Холодная вода или лёд</div>
+                </div>
+            </div>
+            <div class="section">
+                <h2 class="section-title">🍳 ИНСТРУКЦИЯ</h2>
+                <div class="step"><strong>1. ПОДГОТОВЬ</strong><br>Достань яйца из холодильника.<br>Возьми кастрюлю.<br>Положи яйца в кастрюлю в один слой.<br>Налей обычную воду так, чтобы она полностью покрывала яйца.</div>
+                <div class="step"><strong>2. ПОСТАВЬ НА ПЛИТУ</strong><br>Поставь кастрюлю на подходящую конфорку.<br>Включи плиту.<br>Жди, пока вода закипит.</div>
+                <div class="step"><strong>3. ВАРИТЬ 9 МИНУТ</strong><br>Как только вода закипела, начинай отсчитывать 9 минут.</div>
+                <div class="step"><strong>4. ПОСЛЕ ВАРКИ</strong><br>Когда прошло 9 минут:<br>выключи плиту → достань яйца → положи в холодную воду.<br>Оставь на 5–10 минут.</div>
+            </div>
+            <div class="timer-controls">
+                <div class="timer-display" id="timer-almost_hard">00:00</div>
+                <button class="btn" onclick="setTimer('almost_hard', 9)">ЗАПУСТИТЬ ТАЙМЕР 9 МИНУТ</button>
+            </div>
+            <div class="section">
+                <div class="section-title">🎯 ГДЕ ИСПОЛЬЗОВАТЬ</div>
+                <p style="color:#658361;">→ почти полностью готовое<br>→ когда хочется без жидкого центра</p>
+            </div>
+            <button class="btn back-btn" onclick="goBack()">← НАЗАД К ВЫБОРУ</button>
+        </div>
+
+        <div id="recipe-hard" class="recipe-step">
+            <div class="section-title">🟡 РЕЦЕПТ ДЛЯ ВКРУТУЮ</div>
+            <div class="section">
+                <h2 class="section-title">🥚 ЧТО НУЖНО</h2>
+                <div class="ingredients">
+                    <div class="ingredient">• Яйца С0<br><span style="font-size:10px;">(сколько нужно)</span></div>
+                    <div class="ingredient">• Обычная питьевая вода</div>
+                    <div class="ingredient">• Кастрюля</div>
+                    <div class="ingredient">• Ложка</div>
+                    <div class="ingredient">• Холодная вода или лёд</div>
+                </div>
+            </div>
+            <div class="section">
+                <h2 class="section-title">🍳 ИНСТРУКЦИЯ</h2>
+                <div class="step"><strong>1. ПОДГОТОВЬ</strong><br>Достань яйца из холодильника.<br>Возьми кастрюлю.<br>Положи яйца в кастрюлю в один слой.<br>Налей обычную воду так, чтобы она полностью покрывала яйца.</div>
+                <div class="step"><strong>2. ПОСТАВЬ НА ПЛИТУ</strong><br>Поставь кастрюлю на подходящую конфорку.<br>Включи плиту.<br>Жди, пока вода закипит.</div>
+                <div class="step"><strong>3. ВАРИТЬ 10–11 МИНУТ</strong><br>Как только вода закипела, начинай отсчитывать 10–11 минут.</div>
+                <div class="step"><strong>4. ПОСЛЕ ВАРКИ</strong><br>Когда прошло 11 минут:<br>выключи плиту → достань яйца → положи в холодную воду.<br>Оставь на 5–10 минут.</div>
+            </div>
+            <div class="timer-controls">
+                <div class="timer-display" id="timer-hard">00:00</div>
+                <button class="btn btn-large" onclick="setTimer('hard', 11)">ЗАПУСТИТЬ ТАЙМЕР 11 МИНУТ</button>
+            </div>
+            <div class="section">
+                <div class="section-title">🎯 ГДЕ ИСПОЛЬЗОВАТЬ</div>
+                <p style="color:#658361;">→ оливье<br>→ окрошка<br>→ фаршированные яйца<br>→ полностью твёрдый желток</p>
+            </div>
+            <button class="btn back-btn" onclick="goBack()">← НАЗАД К ВЫБОРУ</button>
+        </div>
+
+        <div id="recipe-ants" class="recipe-step">
+            <div class="section-title">🐜 РЕЦЕПТ ДЛЯ МУРАВЬЁВ</div>
+            <div class="section">
+                <h2 class="section-title">🥚 ЧТО НУЖНО</h2>
+                <div class="ingredients">
+                    <div class="ingredient">• Яйца<br><span style="font-size:10px;">(сколько нужно)</span></div>
+                    <div class="ingredient">• Вода</div>
+                    <div class="ingredient">• Кастрюля</div>
+                    <div class="ingredient">• Холодная вода</div>
+                </div>
+            </div>
+            <div class="section">
+                <h2 class="section-title">🐜 ИНСТРУКЦИЯ</h2>
+                <div class="step"><strong>1. ПОЛОЖИ ЯЙЦО</strong><br>Положи яйцо в кастрюлю.</div>
+                <div class="step"><strong>2. ЗАЛЕЙ ВОДОЙ</strong><br>Залей водой так, чтобы яйцо было полностью покрыто.</div>
+                <div class="step"><strong>3. ПОСТАВЬ НА ПЛИТУ</strong><br>Поставь кастрюлю на плиту и включи.</div>
+                <div class="step"><strong>4. ЖДИ КИПЕНИЕ</strong><br>Жди, пока вода закипит.</div>
+                <div class="step"><strong>5. ВАРИТЬ 10–11 МИНУТ</strong><br>Как только вода закипела, варить 10–11 минут.</div>
+                <div class="step"><strong>6. ВЫКЛЮЧИ ПЛИТУ</strong><br>Выключи плиту и достань яйца.</div>
+                <div class="step"><strong>7. ХОЛОДНАЯ ВОДА</strong><br>Положи яйца в холодную воду на 5–10 минут.</div>
+                <div class="step"><strong>8. ПОЧИСТИТЬ</strong><br>Почисти яйца.</div>
+            </div>
+            <div class="timer-controls">
+                <div class="timer-display" id="timer-ants">00:00</div>
+                <button class="btn btn-large" onclick="setTimer('ants', 11)">ЗАПУСТИТЬ ТАЙМЕР 11 МИНУТ</button>
+            </div>
+            <div class="success-message" id="success-ants">
+                <h2>🎉 ПОЗДРАВЛЯЕМ!</h2>
+                <p>Ты успешно приготовил яйца по муравьиному рецепту!</p>
+                <p>Теперь можешь давать муравьям!</p>
+                <div class="emoji">🐜</div>
+            </div>
+            <button class="btn back-btn" onclick="goBack()">← НАЗАД К ВЫБОРУ</button>
+        </div>
+    </div>
+
+    <script>
+        var timerIntervals = {};
+        var selected = [];
+
+        const typeEmojis = {
+            liquid: '💧',
+            creamy: '🧈',
+            soft: '🟠',
+            almost_hard: '🟡',
+            hard: '🟡',
+            ants: '🐜'
+        };
+
+        const typeNames = {
+            liquid: 'Жидкий',
+            creamy: 'Кремовый',
+            soft: 'Мягкий',
+            almost_hard: 'Почти вкрутую',
+            hard: 'Вкрутую',
+            ants: 'Для муравьёв'
+        };
+
+        const typeRecs = {
+            liquid: 'для тостов, завтрака',
+            creamy: 'для рамена, лапши, риса',
+            soft: 'для бутербродов, салатов',
+            almost_hard: 'без жидкого центра',
+            hard: 'для Оливье, окрошки',
+            ants: 'специальный рецепт'
+        };
+
+        document.querySelectorAll('.choice-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const type = this.dataset.type;
+                toggleSelection(type);
+            });
+        });
+
+        function toggleSelection(type) {
+            const index = selected.indexOf(type);
+            if (index === -1) {
+                selected.push(type);
+            } else {
+                selected.splice(index, 1);
+            }
+            updateUI();
+        }
+
+        function updateUI() {
+            // Кнопки
+            document.querySelectorAll('.choice-btn').forEach(btn => {
+                const type = btn.dataset.type;
+                btn.classList.toggle('selected', selected.includes(type));
+            });
+
+            // Инфо
+            const textEl = document.getElementById('selectedText');
+            if (selected.length === 0) {
+                textEl.textContent = 'Ничего не выбрано';
+            } else {
+                textEl.textContent = 'Выбрано: ' + selected.map(t => typeEmojis[t] + ' ' + typeNames[t] + ' (' + typeRecs[t] + ')').join(', ');
+            }
+        }
+
+        function getCookTime(type) {
+            const map = {
+                liquid: 6,
+                creamy: 7,
+                soft: 8,
+                almost_hard: 9,
+                hard: 11,
+                ants: 11
+            };
+            return map[type] || 6;
+        }
+
+        function cookBasket() {
+            if (selected.length === 0) {
+                alert('❌ Выбери хотя бы одно яйцо!');
+                return;
+            }
+
+            if (selected.length === 1) {
+                showRecipe(selected[0]);
+                return;
+            }
+
+            const types = [...selected];
+            const maxMinutes = Math.max(...types.map(t => getCookTime(t)));
+
+            document.getElementById('choice-screen').style.display = 'none';
+
+            let existing = document.getElementById('batch-recipe');
+            if (existing) existing.remove();
+
+            const batchDiv = document.createElement('div');
+            batchDiv.id = 'batch-recipe';
+            batchDiv.className = 'recipe-step active';
+            batchDiv.innerHTML = `
+                <div class="section-title">🍳 ГОТОВИМ НЕСКОЛЬКО ЯИЦ ОДНОВРЕМЕННО</div>
+                <div class="section">
+                    <div style="text-align:center; padding:8px;">
+                        <span style="font-size:16px;">${types.map(t => typeEmojis[t] || '🥚').join(' ')}</span>
+                        <div style="margin-top:8px; font-size:11px; color:#658361;">
+                            ${types.map(t => typeNames[t]).join(' + ')}
+                        </div>
+                        <div style="margin-top:4px; font-size:9px; color:#658361; opacity:0.7;">
+                            ${types.map(t => typeRecs[t]).join(' | ')}
+                        </div>
+                    </div>
+                </div>
+                <div class="batch-timer-info">
+                    ⏱ Варим все яйца <strong>${maxMinutes} минут</strong> (по самому долгому рецепту)
+                </div>
+                <div class="timer-controls">
+                    <div class="timer-display" id="timer-batch">00:00</div>
+                    <button class="btn btn-large" onclick="setBatchTimer(${maxMinutes})">ЗАПУСТИТЬ ТАЙМЕР ${maxMinutes} МИН</button>
+                </div>
+                <div class="section">
+                    <div class="section-title">📋 ЧТО ДЕЛАТЬ</div>
+                    <div class="step"><strong>1.</strong> Подготовь все яйца, положи в кастрюлю одним слоем.</div>
+                    <div class="step"><strong>2.</strong> Залей водой, доведи до кипения.</div>
+                    <div class="step"><strong>3.</strong> Вари <strong>${maxMinutes} минут</strong>.</div>
+                    <div class="step"><strong>4.</strong> После варки — в холодную воду на 5–10 минут.</div>
+                    <div class="step"><strong>5.</strong> Наслаждайся! 🍳</div>
+                </div>
+                <button class="btn back-btn" onclick="goBack()">← НАЗАД К ВЫБОРУ</button>
+            `;
+            document.querySelector('.container').appendChild(batchDiv);
+        }
+
+        let batchTimerInterval = null;
+
+        function setBatchTimer(minutes) {
+            const timerElement = document.getElementById('timer-batch');
+            if (!timerElement) return;
+
+            if (batchTimerInterval) {
+                clearInterval(batchTimerInterval);
+                batchTimerInterval = null;
+            }
+
+            let remainingSeconds = minutes * 60;
+            updateTimerDisplay(timerElement, remainingSeconds);
+
+            batchTimerInterval = setInterval(function() {
+                remainingSeconds--;
+                if (remainingSeconds <= 0) {
+                    clearInterval(batchTimerInterval);
+                    batchTimerInterval = null;
+                    timerElement.textContent = '00:00';
+                    alert('⏰ ВРЕМЯ ВЫШЛО! Выключите плиту и достаньте яйца!');
+                    return;
+                }
+                updateTimerDisplay(timerElement, remainingSeconds);
+            }, 1000);
+        }
+
+        function showRecipe(type) {
+            document.querySelectorAll('.recipe-step').forEach(el => el.classList.remove('active'));
+            document.getElementById('choice-screen').style.display = 'none';
+            const recipe = document.getElementById('recipe-' + type);
+            if (recipe) recipe.classList.add('active');
+            const successMsg = document.getElementById('success-ants');
+            if (successMsg) successMsg.classList.remove('visible');
+
+            const batch = document.getElementById('batch-recipe');
+            if (batch) batch.remove();
+        }
+
+        function goBack() {
+            document.querySelectorAll('.recipe-step').forEach(el => el.classList.remove('active'));
+            document.getElementById('choice-screen').style.display = 'block';
+            Object.keys(timerIntervals).forEach(key => {
+                clearInterval(timerIntervals[key]);
+                delete timerIntervals[key];
+            });
+            document.querySelectorAll('.timer-display').forEach(el => el.textContent = '00:00');
+
+            if (batchTimerInterval) {
+                clearInterval(batchTimerInterval);
+                batchTimerInterval = null;
+            }
+            const batch = document.getElementById('batch-recipe');
+            if (batch) batch.remove();
+
+            const successMsg = document.getElementById('success-ants');
+            if (successMsg) successMsg.classList.remove('visible');
+        }
+
+        function setTimer(recipeId, minutes) {
+            const timerElement = document.getElementById('timer-' + recipeId);
+            if (!timerElement) return;
+
+            if (timerIntervals[recipeId]) {
+                clearInterval(timerIntervals[recipeId]);
+                delete timerIntervals[recipeId];
+            }
+
+            let remainingSeconds = minutes * 60;
+            updateTimerDisplay(timerElement, remainingSeconds);
+
+            timerIntervals[recipeId] = setInterval(function() {
+                remainingSeconds--;
+                if (remainingSeconds <= 0) {
+                    clearInterval(timerIntervals[recipeId]);
+                    delete timerIntervals[recipeId];
+                    timerElement.textContent = '00:00';
+                    alert('⏰ ВРЕМЯ ВЫШЛО! Выключите плиту и достаньте яйца!');
+                    if (recipeId === 'ants') {
+                        const successMsg = document.getElementById('success-ants');
+                        if (successMsg) successMsg.classList.add('visible');
+                    }
+                    return;
+                }
+                updateTimerDisplay(timerElement, remainingSeconds);
+            }, 1000);
+        }
+
+        function updateTimerDisplay(element, totalSeconds) {
+            const minutes = Math.floor(totalSeconds / 60).toString().padStart(2, '0');
+            const seconds = (totalSeconds % 60).toString().padStart(2, '0');
+            element.textContent = minutes + ':' + seconds;
+        }
+
+        // Инициализация
+        updateUI();
+    </script>
+</body>
+</html>

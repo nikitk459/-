@@ -1,0 +1,1051 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="description" content="Классические фаршированные перцы — пошаговый гид по готовке, который всегда показывает, что делать прямо сейчас">
+<meta name="theme-color" content="#B23A2E">
+<title>🌶️ Фаршированные перцы</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Mono:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1"></script>
+
+<style>
+    *{ margin:0; padding:0; box-sizing:border-box; }
+
+    :root{
+        --paprika:#B23A2E;
+        --ember:#7A2419;
+        --gold:#D99A3D;
+        --basil:#4F7A43;
+        --kraft:#FBF0DE;
+        --surface:#FFFCF6;
+        --char:#2A1F18;
+        --char-soft:#7A6653;
+        --line:rgba(122,36,25,0.16);
+        --shadow-sm:0 5px 16px rgba(42,31,24,0.07);
+        --shadow-md:0 14px 30px rgba(42,31,24,0.11);
+        --shadow-lg:0 22px 46px rgba(42,31,24,0.22);
+        --inset-highlight:rgba(255,255,255,0.55);
+        --r-card:28px 28px 28px 8px;
+        --r-full:999px;
+        --ease:cubic-bezier(.22,.9,.32,1);
+    }
+
+    [data-theme="dark"]{
+        --kraft:#211A14;
+        --surface:#2E251D;
+        --char:#F3E7D6;
+        --char-soft:#C7B29A;
+        --line:rgba(217,154,61,0.2);
+        --shadow-sm:0 5px 16px rgba(0,0,0,0.28);
+        --shadow-md:0 14px 30px rgba(0,0,0,0.34);
+        --shadow-lg:0 22px 46px rgba(0,0,0,0.48);
+        --inset-highlight:rgba(255,255,255,0.05);
+    }
+
+    @media (prefers-reduced-motion: reduce){
+        *,*::before,*::after{
+            animation-duration:0.01ms !important;
+            animation-iteration-count:1 !important;
+            transition-duration:0.01ms !important;
+            scroll-behavior:auto !important;
+        }
+    }
+
+    html{ scroll-behavior:smooth; }
+    body{
+        background:var(--kraft);
+        font-family:'Plus Jakarta Sans',sans-serif;
+        color:var(--char);
+        min-height:100vh;
+        transition:background .3s var(--ease), color .3s var(--ease);
+        -webkit-font-smoothing:antialiased;
+    }
+    ::selection{ background:var(--gold); color:var(--char); }
+    :focus-visible{ outline:3px solid var(--paprika); outline-offset:2px; border-radius:8px; }
+
+    /* Резервируем место внизу, чтобы плавающая плашка не перекрывала контент/кнопки последней карточки */
+    .app{ max-width:780px; margin:0 auto; padding:18px 18px 110px; }
+    @media (min-width:768px){ .app{ padding:40px 30px 130px; } }
+
+    /* ===== HEADER ===== */
+    .header{ display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; padding:10px 20px; background:var(--surface); border-radius:var(--r-full); box-shadow:var(--shadow-sm); border:1px solid var(--line); }
+    .logo{ display:flex; align-items:center; gap:10px; }
+    .logo-icon{ font-size:28px; display:inline-block; animation:iconWiggle 3.2s ease-in-out infinite; }
+    @keyframes iconWiggle{ 0%,100%{ transform:rotate(-6deg); } 50%{ transform:rotate(6deg); } }
+    .logo-text{ font-family:'Bricolage Grotesque',sans-serif; font-weight:700; font-size:18px; color:var(--ember); }
+    .logo-text span{ color:var(--paprika); }
+    .theme-btn{ background:transparent; border:1.5px solid var(--paprika); border-radius:50%; width:38px; height:38px; color:var(--paprika); cursor:pointer; transition:.2s var(--ease); display:flex; align-items:center; justify-content:center; }
+    .theme-btn:hover{ background:var(--paprika); color:#fff; }
+
+    /* ===== ФОТО БЛЮДА ===== */
+    .photo-strip{ display:flex; gap:10px; flex-wrap:wrap; }
+    .photo-thumb{
+        width:84px; height:84px; border-radius:18px; background-size:cover; background-position:center;
+        position:relative; cursor:pointer; box-shadow:var(--shadow-sm), inset 0 1px 0 var(--inset-highlight);
+        transition:transform .25s var(--ease); flex-shrink:0;
+    }
+    .photo-thumb:hover{ transform:scale(1.05) rotate(-1deg); }
+    .photo-thumb:active{ transform:scale(.95); }
+    .photo-delete{ position:absolute; top:-7px; right:-7px; width:24px; height:24px; border-radius:50%; background:var(--ember); color:#fff; border:2px solid var(--surface); display:flex; align-items:center; justify-content:center; font-size:11px; cursor:pointer; box-shadow:var(--shadow-sm); }
+    .photo-add{
+        width:84px; height:84px; border-radius:18px; border:2px dashed var(--line); background:transparent;
+        display:flex; flex-direction:column; align-items:center; justify-content:center; gap:4px; color:var(--char-soft);
+        cursor:pointer; font-size:11px; font-weight:600; text-align:center; transition:.2s var(--ease); flex-shrink:0;
+    }
+    .photo-add:hover{ border-color:var(--paprika); color:var(--paprika); transform:translateY(-2px); }
+    .photo-add:active{ transform:scale(.95); }
+    .photo-add i{ font-size:18px; }
+    .photo-empty-hint{ display:none; align-items:center; gap:10px; color:var(--char-soft); font-size:13px; margin-top:14px; padding-top:2px; border-top:1px dashed var(--line); padding-top:14px; }
+    .photo-empty-hint i{ font-size:20px; opacity:.4; }
+
+    .lightbox{ position:fixed; inset:0; background:rgba(20,12,8,.88); z-index:3000; display:flex; align-items:center; justify-content:center; padding:24px; animation:fadeIn .2s var(--ease); }
+    @keyframes fadeIn{ from{opacity:0;} to{opacity:1;} }
+    .lightbox img{ max-width:100%; max-height:100%; border-radius:20px; box-shadow:var(--shadow-lg); animation:cardIn .25s var(--ease); }
+    .lightbox-close{ position:absolute; top:20px; right:20px; width:42px; height:42px; border-radius:50%; background:rgba(255,255,255,.15); border:none; color:#fff; font-size:16px; cursor:pointer; }
+
+    /* ===== HERO ===== */
+    .hero{ text-align:center; margin-bottom:20px; background:var(--surface); border-radius:36px 36px 36px 10px; padding:30px 20px; box-shadow:var(--shadow-sm), inset 0 1px 0 var(--inset-highlight); border-bottom:4px solid var(--paprika); animation:rise .55s var(--ease) both; }
+    @keyframes rise{ from{opacity:0; transform:translateY(12px);} to{opacity:1; transform:translateY(0);} }
+    .hero h1{ font-family:'Bricolage Grotesque',sans-serif; font-weight:700; font-size:30px; color:var(--ember); letter-spacing:-0.01em; line-height:1.1; }
+    @media (min-width:600px){ .hero h1{ font-size:40px; } }
+    .hero p{ color:var(--char-soft); margin-top:9px; font-size:14.5px; }
+    .hero-badge{ background:rgba(178,58,46,0.12); display:inline-block; padding:6px 16px; border-radius:var(--r-full); margin-top:14px; font-size:13px; font-weight:600; color:var(--ember); }
+
+    .status-line{ margin-top:16px; display:inline-flex; align-items:center; gap:10px; background:var(--kraft); padding:9px 18px; border-radius:var(--r-full); font-size:13.5px; font-weight:700; color:var(--ember); }
+    .status-line .dot{ width:8px; height:8px; border-radius:50%; background:var(--basil); flex-shrink:0; }
+    .status-line .dot.active{ background:var(--paprika); animation:pulse 1.6s ease-in-out infinite; }
+    @keyframes pulse{ 0%,100%{ box-shadow:0 0 0 0 rgba(178,58,46,0.35);} 50%{ box-shadow:0 0 0 6px rgba(178,58,46,0);} }
+
+    .start-btn{ background:linear-gradient(135deg, var(--paprika), var(--ember)); border:none; border-radius:var(--r-full); padding:16px 26px; width:100%; color:#fff; font-weight:700; font-size:15.5px; cursor:pointer; margin-bottom:22px; box-shadow:0 16px 30px -12px rgba(122,36,25,0.55); transition:transform .2s var(--ease); display:flex; align-items:center; justify-content:center; gap:10px; }
+    .start-btn:hover{ transform:translateY(-2px); }
+    .start-btn:active{ transform:scale(.97); }
+
+    /* ===== PROGRESS DOTS ===== */
+    .dots-card{ background:var(--surface); border-radius:24px 24px 24px 8px; padding:16px 20px; margin-bottom:20px; box-shadow:var(--shadow-sm); }
+    .dots-row{ display:flex; flex-wrap:wrap; gap:7px; }
+    .step-dot{ width:12px; height:12px; border-radius:4px; background:rgba(122,36,25,0.15); border:none; padding:0; cursor:pointer; transition:transform .2s var(--ease), background .2s var(--ease); }
+    .step-dot:hover{ transform:scale(1.3) rotate(20deg); }
+    .step-dot.done{ background:var(--basil); animation:dotPop .35s var(--ease); }
+    @keyframes dotPop{ 0%{ transform:scale(1); } 50%{ transform:scale(1.6); } 100%{ transform:scale(1); } }
+    .step-dot.current{ background:var(--paprika); transform:scale(1.3); }
+    .dots-label{ margin-top:9px; font-size:12.5px; color:var(--char-soft); }
+
+    /* ===== CARDS COMMON ===== */
+    .card{ background:var(--surface); border-radius:var(--r-card); padding:22px; margin-bottom:20px; box-shadow:var(--shadow-sm), inset 0 1px 0 var(--inset-highlight); transition:transform .25s var(--ease), box-shadow .25s var(--ease); }
+    .card:hover{ transform:translateY(-2px); box-shadow:var(--shadow-md), inset 0 1px 0 var(--inset-highlight); }
+    .card-header{ display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:14px; margin-bottom:16px; }
+    .card-header h2{ font-family:'Bricolage Grotesque',sans-serif; font-weight:700; font-size:20px; color:var(--ember); }
+
+    .portion-control{ display:flex; align-items:center; gap:10px; background:var(--kraft); padding:5px 15px; border-radius:var(--r-full); }
+    .portion-control button{ background:var(--paprika); border:none; width:30px; height:30px; border-radius:9px; color:#fff; font-weight:700; cursor:pointer; transition:transform .15s var(--ease); box-shadow:inset 0 1px 0 rgba(255,255,255,.35), 0 3px 6px rgba(122,36,25,.3); }
+    .portion-control button:hover{ transform:scale(1.08); }
+    .portion-control button:active{ transform:scale(.92); }
+    .portion-input{ width:38px; text-align:center; border:none; background:transparent; font-weight:800; font-size:15px; color:var(--char); font-family:'Space Mono',monospace; outline:none; }
+    .portion-control span{ font-size:12.5px; color:var(--char-soft); font-weight:600; }
+
+    .ing-category{ font-weight:700; color:var(--ember); font-size:12px; text-transform:uppercase; letter-spacing:.05em; margin:16px 0 8px; }
+    .ing-category:first-child{ margin-top:0; }
+    .ingredient-item{ background:var(--kraft); border-radius:16px; padding:11px 15px; display:flex; align-items:center; gap:12px; margin-bottom:7px; cursor:pointer; transition:opacity .2s var(--ease), transform .2s var(--ease); }
+    .ingredient-item:hover{ transform:translateX(3px); }
+    .ingredient-item:active{ transform:scale(.98); }
+    .ingredient-item input{ width:19px; height:19px; cursor:pointer; accent-color:var(--paprika); flex-shrink:0; }
+    .ingredient-item input:checked{ animation:checkPop .3s var(--ease); }
+    @keyframes checkPop{ 0%{ transform:scale(1); } 45%{ transform:scale(1.35); } 100%{ transform:scale(1); } }
+    .ingredient-name{ flex:1; font-weight:600; font-size:14px; }
+    .ingredient-amount{ background:var(--surface); padding:4px 12px; border-radius:var(--r-full); font-size:12px; font-weight:700; color:var(--paprika); font-family:'Space Mono',monospace; }
+    .ingredient-item.checked{ opacity:.5; }
+    .ingredient-item.checked .ingredient-name{ text-decoration:line-through; }
+
+    .wake-btn{ width:100%; background:var(--kraft); border:1.5px solid var(--line); color:var(--ember); padding:12px; border-radius:var(--r-full); margin-top:16px; font-weight:700; font-size:13.5px; cursor:pointer; transition:background .2s; }
+    .wake-btn:hover{ background:var(--line); }
+    .wake-btn.active{ background:var(--basil); border-color:var(--basil); color:#fff; }
+
+    .control-panel{ display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:14px; background:var(--surface); padding:11px 20px; border-radius:var(--r-full); margin-bottom:22px; box-shadow:var(--shadow-sm); }
+    .reset-btn{ background:none; border:none; color:var(--char-soft); font-weight:700; font-size:13px; cursor:pointer; display:flex; align-items:center; gap:7px; }
+    .reset-btn:hover{ color:var(--paprika); }
+
+    /* ===== STEPS ===== */
+    .step-group-title{ font-family:'Bricolage Grotesque',sans-serif; font-weight:700; font-size:22px; color:var(--ember); margin:36px 0 14px; padding-bottom:6px; border-bottom:3px dotted var(--paprika); display:inline-block; }
+    .step-group-title:first-of-type{ margin-top:0; }
+
+    .step-card{ background:var(--surface); border-radius:var(--r-card); margin-bottom:13px; border:2px solid transparent; position:relative; transition:border-color .3s var(--ease), opacity .3s var(--ease), transform .25s var(--ease), box-shadow .25s var(--ease); box-shadow:var(--shadow-sm), inset 0 1px 0 var(--inset-highlight); }
+    .step-card:not(.locked):not(.done):hover{ transform:translateY(-3px); box-shadow:var(--shadow-md), inset 0 1px 0 var(--inset-highlight); }
+    .step-card.enter{ animation:cardIn .5s var(--ease) both; }
+    @keyframes cardIn{ from{opacity:0; transform:translateY(10px);} to{opacity:1; transform:translateY(0);} }
+    .step-card.current{ border-color:var(--paprika); box-shadow:var(--shadow-md); }
+    .step-card.done{ opacity:.6; }
+    .step-card.locked{ opacity:.55; }
+    .step-card.locked::after{ content:"\f023"; font-family:"Font Awesome 6 Free"; font-weight:900; position:absolute; top:18px; right:18px; font-size:15px; color:var(--char-soft); opacity:.6; }
+    .step-content{ padding:20px; }
+    .step-header{ display:flex; align-items:center; gap:13px; margin-bottom:11px; flex-wrap:wrap; }
+    .step-number{ width:38px; height:38px; border-radius:11px; display:flex; align-items:center; justify-content:center; font-family:'Space Mono',monospace; font-weight:700; font-size:15px; color:#fff; background:linear-gradient(145deg, var(--paprika), var(--ember)); flex-shrink:0; transition:background .3s; box-shadow:inset 0 2px 3px rgba(255,255,255,.3), 0 4px 10px rgba(122,36,25,.35); }
+    .step-card.current .step-number{ animation:numberGlow 2s ease-in-out infinite; }
+    @keyframes numberGlow{ 0%,100%{ box-shadow:inset 0 2px 3px rgba(255,255,255,.3), 0 4px 10px rgba(122,36,25,.35), 0 0 0 0 rgba(193,67,43,.4); } 50%{ box-shadow:inset 0 2px 3px rgba(255,255,255,.3), 0 4px 10px rgba(122,36,25,.35), 0 0 0 7px rgba(193,67,43,0); } }
+    .step-card.done .step-number{ background:var(--basil); }
+    .step-title{ font-weight:700; font-size:16px; font-family:'Bricolage Grotesque',sans-serif; }
+    .step-timer-badge{ background:var(--kraft); border-radius:var(--r-full); padding:5px 13px; font-size:12px; color:var(--ember); font-weight:600; }
+    .current-tag{ font-size:10.5px; font-weight:800; text-transform:uppercase; letter-spacing:.06em; background:var(--paprika); color:#fff; padding:4px 10px; border-radius:var(--r-full); }
+    .step-desc{ color:var(--char-soft); margin-bottom:14px; padding-left:51px; font-size:13.5px; line-height:1.5; }
+
+    /* ФИКС: подшаги теперь на grid, а не на flex с wrap — раньше при переносе длинного
+       текста на 2 строки чекбокс "уплывал" в центр блока и визуально отделялся от текста. */
+    .substeps{ padding-left:51px; margin-bottom:12px; display:flex; flex-direction:column; gap:2px; }
+    .substep{ display:grid; grid-template-columns:16px 1fr; align-items:start; gap:10px; padding:7px 0; cursor:pointer; }
+    .substep input{ width:16px; height:16px; cursor:pointer; accent-color:var(--paprika); margin-top:2px; }
+    .substep input:checked{ animation:checkPop .3s var(--ease); }
+    .substep.checked span{ text-decoration:line-through; opacity:.55; }
+    .substep span{ font-size:13.5px; line-height:1.4; }
+
+    .timer-control{ padding-left:51px; margin:12px 0 4px; }
+    .timer-btn{ background:var(--paprika); border:none; padding:10px 20px; border-radius:var(--r-full); font-weight:700; font-size:13.5px; color:#fff; cursor:pointer; display:inline-flex; align-items:center; gap:8px; transition:transform .15s var(--ease); box-shadow:inset 0 1px 0 rgba(255,255,255,.3), 0 4px 10px rgba(122,36,25,.3); }
+    .timer-btn:disabled{ opacity:.4; cursor:not-allowed; }
+    .timer-btn:active:not(:disabled){ transform:scale(.96); }
+
+    /* signature element: simmering pot — liquid level fills as braising time passes */
+    .pot{ display:inline-flex; align-items:center; gap:14px; background:var(--kraft); padding:8px 16px 8px 8px; border-radius:var(--r-full); }
+    .pot-vessel{ width:46px; height:38px; border-radius:0 0 16px 16px; border:3px solid var(--ember); border-top:none; position:relative; overflow:hidden; background:var(--surface); flex-shrink:0; }
+    .pot-liquid{ position:absolute; left:0; right:0; bottom:0; height:0%; background:linear-gradient(180deg, var(--gold), var(--paprika)); transition:height 1s linear; }
+    .pot-bubble{ position:absolute; width:4px; height:4px; border-radius:50%; background:rgba(255,255,255,0.6); animation:bubble 2.2s ease-in infinite; }
+    @keyframes bubble{ 0%{ transform:translateY(0); opacity:0; } 20%{ opacity:1; } 100%{ transform:translateY(-32px); opacity:0; } }
+    .timer-time{ font-family:'Space Mono',monospace; font-size:14px; font-weight:700; color:var(--ember); }
+    .timer-icon-btn{ background:var(--surface); border:none; width:36px; height:36px; border-radius:50%; cursor:pointer; color:var(--ember); }
+
+    /* ФИКС контраста: раньше кнопка была почти того же цвета, что и фон карточки,
+       и выглядела "пустой"/бледной. Теперь чёткая обводка в невыполненном состоянии. */
+    .step-done-btn{
+        width:calc(100% - 40px); margin:0 20px 20px; background:transparent;
+        border:2px solid var(--paprika); padding:11px; border-radius:var(--r-full);
+        font-weight:700; font-size:14px; cursor:pointer; color:var(--paprika);
+        transition:background .2s, color .2s, transform .15s;
+    }
+    .step-done-btn:hover:not(:disabled){ background:var(--paprika); color:#fff; }
+    .step-done-btn:active:not(:disabled){ transform:scale(.98); }
+    .step-done-btn:disabled{ opacity:.5; cursor:not-allowed; }
+    .step-card.done .step-done-btn{ background:var(--basil); border-color:var(--basil); color:#fff; opacity:1; }
+
+    /* ===== FLOATING PILL ===== */
+    .float-pill{ position:fixed; left:16px; right:16px; bottom:20px; z-index:200; background:var(--ember); color:#fff; border-radius:var(--r-full); padding:12px 12px 12px 20px; display:flex; align-items:center; justify-content:space-between; gap:14px; box-shadow:var(--shadow-lg); transform:translateY(140%); transition:transform .4s var(--ease); max-width:420px; margin:0 auto; cursor:pointer; }
+    .float-pill.visible{ transform:translateY(0); }
+    .float-pill .fp-label{ font-size:11px; text-transform:uppercase; letter-spacing:.06em; color:rgba(255,255,255,0.6); font-weight:700; }
+    .float-pill .fp-main{ font-size:14px; font-weight:700; }
+    .float-pill .fp-time{ font-family:'Space Mono',monospace; font-size:19px; font-weight:800; color:var(--gold); }
+    .fp-stop{ background:rgba(255,255,255,0.14); border:none; width:36px; height:36px; border-radius:50%; color:#fff; cursor:pointer; flex-shrink:0; }
+
+    .scroll-top{ position:fixed; bottom:86px; right:16px; width:44px; height:44px; background:var(--surface); border-radius:14px; display:flex; align-items:center; justify-content:center; cursor:pointer; opacity:0; visibility:hidden; transition:.25s; box-shadow:var(--shadow-md); color:var(--paprika); }
+    .scroll-top.visible{ opacity:1; visibility:visible; }
+
+    .toast{ position:fixed; bottom:100px; left:20px; right:20px; background:var(--char); color:var(--kraft); padding:12px 20px; border-radius:var(--r-full); text-align:center; z-index:300; font-weight:600; font-size:13.5px; transform:translateY(100px); opacity:0; transition:.35s var(--ease); max-width:420px; margin:0 auto; }
+    .toast.show{ transform:translateY(0); opacity:1; }
+
+    .footer{ text-align:center; margin:50px 0 10px; font-family:'Bricolage Grotesque',sans-serif; font-weight:700; font-size:20px; color:var(--ember); }
+
+    .completion-modal{ position:fixed; inset:0; background:rgba(42,31,24,0.72); backdrop-filter:blur(8px); z-index:2000; display:flex; align-items:center; justify-content:center; padding:20px; }
+    .completion-card{ background:var(--surface); border-radius:32px 32px 32px 10px; padding:38px 32px; text-align:center; max-width:340px; animation:cardIn .4s var(--ease); }
+    .completion-card .emoji{ font-size:52px; margin-bottom:14px; }
+    .completion-card h3{ font-family:'Bricolage Grotesque',sans-serif; font-size:24px; color:var(--ember); margin-bottom:8px; }
+    .completion-card p{ color:var(--char-soft); font-size:13.5px; margin-bottom:20px; line-height:1.5; }
+    .completion-btn{ background:linear-gradient(135deg, var(--paprika), var(--ember)); border:none; padding:12px 28px; border-radius:var(--r-full); color:#fff; font-weight:700; cursor:pointer; width:100%; }
+</style>
+</head>
+<body>
+<div class="app">
+    <div class="header">
+        <div class="logo"><span class="logo-icon">🌶️</span><span class="logo-text">Фаршированные <span>перцы</span></span></div>
+        <button class="theme-btn" id="themeBtn" aria-label="Переключить тёмную тему"><i class="fa-solid fa-moon"></i></button>
+    </div>
+
+    <div class="card photo-card">
+        <div class="card-header">
+            <h2><i class="fas fa-camera"></i> Фото блюда</h2>
+        </div>
+        <div class="photo-strip" id="photoStrip"></div>
+        <div class="photo-empty-hint" id="photoEmptyHint">
+            <i class="fas fa-image"></i>
+            <span>Добавьте свои фото готового блюда — они появятся здесь</span>
+        </div>
+        <input type="file" id="photoInput" accept="image/*" multiple hidden>
+    </div>
+
+    <div class="hero">
+        <h1>Классические фаршированные перцы</h1>
+        <p>🍅 Мясо, рис и ароматная томатная подливка — вкус из детства</p>
+        <div class="hero-badge"><i class="fas fa-clock"></i> 1 час 30 мин &nbsp;·&nbsp; 🔥 543 ккал &nbsp;·&nbsp; 🥩 на 6 порций</div>
+        <div class="status-line" id="statusLine"><span class="dot active" id="statusDot"></span><span id="statusText">Готовим первый шаг</span></div>
+    </div>
+
+    <button class="start-btn" id="startBtn"><i class="fas fa-arrow-down"></i> Перейти к текущему шагу</button>
+
+    <div class="dots-card">
+        <div class="dots-row" id="dotsRow"></div>
+        <div class="dots-label" id="dotsLabel">Выполнено 0 из 8 шагов</div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <h2><i class="fas fa-basket-shopping"></i> Ингредиенты</h2>
+            <div class="portion-control">
+                <button id="portMinus" aria-label="Уменьшить количество порций">−</button>
+                <input type="text" id="portionsInput" value="6" class="portion-input" inputmode="numeric" pattern="[0-9]*" aria-label="Количество порций">
+                <button id="portPlus" aria-label="Увеличить количество порций">+</button>
+                <span>порций</span>
+            </div>
+        </div>
+        <div id="ingredientsContainer"></div>
+        <button class="wake-btn" id="wakeLockBtn"><i class="fas fa-sun"></i> Экран не гаснет</button>
+    </div>
+
+    <div class="control-panel">
+        <button class="reset-btn" id="resetBtn"><i class="fas fa-redo-alt"></i> Сбросить весь прогресс</button>
+    </div>
+
+    <div id="stepsContainer"></div>
+    <div class="footer">🌶️ Приятного аппетита!</div>
+</div>
+
+<div class="float-pill" id="floatPill">
+    <div><div class="fp-label" id="fpLabel">Далее</div><div class="fp-main" id="fpMain">Шаг 1</div></div>
+    <div style="display:flex; align-items:center; gap:12px;">
+        <span class="fp-time" id="fpTime" style="display:none;">00:00</span>
+        <button class="fp-stop" id="fpStop" style="display:none;" aria-label="Остановить таймер"><i class="fas fa-stop"></i></button>
+        <i class="fas fa-arrow-right" id="fpArrow" style="opacity:.6;"></i>
+    </div>
+</div>
+
+<div class="scroll-top" id="scrollTop" role="button" tabindex="0" aria-label="Наверх страницы"><i class="fas fa-arrow-up"></i></div>
+<div id="toast" class="toast"></div>
+<audio id="alarmAudio" preload="auto"><source src="https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3" type="audio/mpeg"></audio>
+
+<script>
+(function(){
+    "use strict";
+
+    const AUTO_RESET_SECONDS = 12 * 3600;
+    const MIN_PORTIONS = 1;
+    const MAX_PORTIONS = 50;
+    const PORTIONS_JOKE_THRESHOLD = 20;
+
+    /* ============================================ */
+    /* === ИНГРЕДИЕНТЫ =============================== */
+    /* ============================================ */
+
+    const INGREDIENTS_BASE = {
+        basePortions:6,
+        items:[
+            { id:'pepper', name:'Сладкий перец', baseAmount:12, unit:'шт.', category:'🫑 Овощи' },
+            { id:'onion', name:'Репчатый лук', baseAmount:2, unit:'шт.', category:'🫑 Овощи' },
+            { id:'carrot', name:'Морковь', baseAmount:2, unit:'шт.', category:'🫑 Овощи' },
+            { id:'mince', name:'Мясной фарш (говядина/свинина)', baseAmount:600, unit:'г', category:'🥩 Мясо и крупы' },
+            { id:'rice', name:'Рис', baseAmount:100, unit:'г', category:'🥩 Мясо и крупы' },
+            { id:'garlic', name:'Чеснок', baseAmount:1, unit:'зубчик', category:'🧂 Специи и приправы' },
+            { id:'salt', name:'Соль', baseAmount:1, unit:'по вкусу', category:'🧂 Специи и приправы' },
+            { id:'pepper_black', name:'Молотый чёрный перец', baseAmount:0.5, unit:'ч.л.', category:'🧂 Специи и приправы' },
+            { id:'sugar', name:'Сахар', baseAmount:1, unit:'ст.л.', category:'🧂 Специи и приправы' },
+            { id:'oil', name:'Растительное масло', baseAmount:60, unit:'мл', category:'🥫 Для подливки' },
+            { id:'tomato_paste', name:'Томатная паста', baseAmount:140, unit:'г', category:'🥫 Для подливки' },
+            { id:'water', name:'Вода для подливки', baseAmount:700, unit:'мл', category:'🥫 Для подливки' },
+            { id:'smetana', name:'Сметана (для подачи)', baseAmount:150, unit:'г', category:'🌿 Для подачи' },
+            { id:'parsley', name:'Свежая петрушка', baseAmount:0.5, unit:'пучка', category:'🌿 Для подачи' }
+        ]
+    };
+
+    const STEPS = [
+        { id:1, group:"Подготовка", title:"Подготовка ингредиентов", desc:"Промойте овощи, отварите рис до полуготовности.", substeps:["Промыть все овощи","Отварить рис 5–7 минут, слить воду и остудить"], timer:null, requires:[] },
+        { id:2, group:"Начинка", title:"Обжарка овощей", desc:"Мелко нарежьте лук, натрите морковь, обжарьте до золотистости.", substeps:["Мелко нарезать лук","Натереть морковь на крупной тёрке","Разогреть масло и обжарить лук с морковью"], timer:null, requires:[] },
+        { id:3, group:"Начинка", title:"Подготовка начинки", desc:"Смешайте фарш, рис, обжаренные овощи и чеснок. Посолите, поперчите.", substeps:["Смешать фарш с рисом, луком и морковью","Добавить чеснок через пресс","Посолить и поперчить, тщательно перемешать"], timer:null, requires:[1,2] },
+        { id:4, group:"Фаршировка", title:"Подготовка перцев", desc:"Удалите семена, не повредив стенки.", substeps:["Помыть перцы","Аккуратно отрезать верхушку и удалить семена"], timer:null, requires:[1] },
+        { id:5, group:"Фаршировка", title:"Фаршировка", desc:"Заполните перцы начинкой, оставляя 1 см до края.", substeps:["Наполнить каждый перец начинкой","Оставить немного места до края (~1 см)"], timer:null, requires:[3,4] },
+        { id:6, group:"Тушение", title:"Приготовление подливки", desc:"Смешайте воду, томатную пасту и сахар, посолите.", substeps:["В кастрюле смешать 700 мл воды, томатную пасту, сахар","Посолить по вкусу и перемешать"], timer:null, requires:[] },
+        { id:7, group:"Тушение", title:"Тушение перцев", desc:"Выложите перцы фаршем вверх, залейте подливкой и тушите 40 минут.", substeps:["Выложить перцы плотно в кастрюлю","Залить подливкой, почти покрывая перцы","Накрыть крышкой и тушить после закипания 40 минут"], timer:{ duration:2400, label:"40 мин" }, requires:[5,6] },
+        { id:8, group:"Подача", title:"Подача", desc:"Выложите перцы, посыпьте зеленью, подавайте со сметаной.", substeps:["Аккуратно выложить перцы на тарелки","Посыпать рубленой петрушкой","Подавать со сметаной"], timer:null, requires:[7] }
+    ];
+
+    /* ============================================ */
+    /* === СОСТОЯНИЕ ================================ */
+    /* ============================================ */
+
+    let checkedIngredients = JSON.parse(localStorage.getItem('recipe_ingredients') || '[]');
+    let completedSteps = JSON.parse(localStorage.getItem('recipe_steps') || '[]');
+    let substepsState = JSON.parse(localStorage.getItem('recipe_substeps') || '{}');
+    let timersState = JSON.parse(localStorage.getItem('recipe_timers') || '{}');
+    let portions = clampPortions(parseInt(localStorage.getItem('recipe_portions')) || INGREDIENTS_BASE.basePortions);
+    let currentActiveTimerId = null;
+    let wakeLock = null;
+    let lastActivity = localStorage.getItem('recipe_last_activity');
+    let isDark = localStorage.getItem('recipe_theme') === 'dark';
+    let photos = JSON.parse(localStorage.getItem('recipe_photos') || '[]');
+    let firstStepsRender = true;
+
+    function clampPortions(v){ return Math.min(MAX_PORTIONS, Math.max(MIN_PORTIONS, isNaN(v)?INGREDIENTS_BASE.basePortions:v)); }
+
+    /* ============================================ */
+    /* === ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ =================== */
+    /* ============================================ */
+
+    function isStepAvailable(step){
+        if (completedSteps.includes(step.id)) return false;
+        if (!step.requires || step.requires.length === 0) return true;
+        return step.requires.every(reqId => completedSteps.includes(reqId));
+    }
+
+    function getCurrentStep(){
+        return STEPS.find(s => !completedSteps.includes(s.id) && isStepAvailable(s));
+    }
+
+    function saveAll(){
+        try{
+            localStorage.setItem('recipe_ingredients', JSON.stringify(checkedIngredients));
+            localStorage.setItem('recipe_steps', JSON.stringify(completedSteps));
+            localStorage.setItem('recipe_timers', JSON.stringify(timersState));
+            localStorage.setItem('recipe_substeps', JSON.stringify(substepsState));
+            localStorage.setItem('recipe_last_activity', Date.now().toString());
+            localStorage.setItem('recipe_portions', portions);
+        }catch(e){ console.error('Ошибка сохранения в localStorage:', e); }
+    }
+
+    function showToast(msg, duration){
+        let t = document.getElementById('toast');
+        if(!t) return;
+        t.textContent = msg;
+        t.classList.add('show');
+        clearTimeout(showToast._t);
+        showToast._t = setTimeout(()=>t.classList.remove('show'), duration || 2200);
+    }
+
+    /** Не блокирует ввод — просто шутит, когда порций стало заметно больше обычного.
+        Срабатывает один раз при пересечении порога, а не на каждое изменение. */
+    function maybeJokeAboutPortions(newValue, oldValue){
+        if(newValue > PORTIONS_JOKE_THRESHOLD && oldValue <= PORTIONS_JOKE_THRESHOLD){
+            showToast(`🌶️ Ого, ${newValue} порций! Зачем тебе столько? 😄`, 3200);
+        }
+    }
+
+    function playSound(){
+        let audio = document.getElementById('alarmAudio');
+        if(audio) audio.play().catch(()=>{ if(navigator.vibrate) navigator.vibrate(200); });
+    }
+
+    function formatTime(sec){ let m=Math.floor(sec/60), s=sec%60; return `${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`; }
+
+    function checkAutoReset(){
+        if(lastActivity){
+            let diff = (Date.now() - parseInt(lastActivity)) / 1000;
+            if(diff >= AUTO_RESET_SECONDS){
+                completedSteps=[]; checkedIngredients=[]; substepsState={}; timersState={};
+                currentActiveTimerId=null; portions=INGREDIENTS_BASE.basePortions;
+                document.getElementById('portionsInput').value = portions;
+                saveAll();
+                showToast('✨ Новый день — свежий рецепт! Прогресс сброшен');
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /* ============================================ */
+    /* === СТАТУС-СТРОКА И ТОЧКИ ===================== */
+    /* ============================================ */
+
+    function updateStatusAndDots(){
+        let statusText = document.getElementById('statusText');
+        let statusDot = document.getElementById('statusDot');
+        let cur = getCurrentStep();
+
+        if(completedSteps.length === STEPS.length){
+            statusText.textContent = 'Всё готово — можно подавать!';
+            statusDot.classList.remove('active');
+        } else if(cur){
+            let parallelNote = '';
+            if(cur.id===7 && timersState[7]?.status==='running'){ parallelNote = ' · пока тушится, просто ждите'; }
+            statusText.textContent = `Шаг ${cur.id} из ${STEPS.length}: ${cur.title}${parallelNote}`;
+            statusDot.classList.add('active');
+        } else {
+            let locked = STEPS.find(s=>!completedSteps.includes(s.id));
+            statusText.textContent = locked ? `Ждём: шаг ${locked.id} пока недоступен` : 'Всё готово!';
+            statusDot.classList.remove('active');
+        }
+
+        let dotsRow = document.getElementById('dotsRow');
+        dotsRow.innerHTML = STEPS.map(s=>{
+            let cls = completedSteps.includes(s.id) ? 'done' : (cur?.id===s.id ? 'current' : '');
+            return `<button class="step-dot ${cls}" data-jump="${s.id}" aria-label="Шаг ${s.id}: ${s.title}"></button>`;
+        }).join('');
+        dotsRow.querySelectorAll('[data-jump]').forEach(btn=>{
+            btn.addEventListener('click', ()=>{
+                document.querySelector(`.step-card[data-step-id="${btn.dataset.jump}"]`)?.scrollIntoView({behavior:'smooth', block:'center'});
+            });
+        });
+        document.getElementById('dotsLabel').textContent = `Выполнено ${completedSteps.length} из ${STEPS.length} шагов`;
+    }
+
+    /* ============================================ */
+    /* === ПЛАВАЮЩАЯ ПОДСКАЗКА "ЧТО ДАЛЬШЕ" =========== */
+    /* ============================================ */
+
+    function updateFloatPill(){
+        let pill = document.getElementById('floatPill');
+        let label = document.getElementById('fpLabel');
+        let main = document.getElementById('fpMain');
+        let time = document.getElementById('fpTime');
+        let stop = document.getElementById('fpStop');
+        let arrow = document.getElementById('fpArrow');
+
+        if(currentActiveTimerId && timersState[currentActiveTimerId]?.status==='running'){
+            let state = timersState[currentActiveTimerId];
+            label.textContent = 'Идёт тушение';
+            main.textContent = 'Осталось времени';
+            time.textContent = formatTime(state.seconds);
+            time.style.display='inline';
+            stop.style.display='flex';
+            arrow.style.display='none';
+            pill.classList.add('visible');
+            pill.onclick = null;
+        } else {
+            let cur = getCurrentStep();
+            if(cur && completedSteps.length < STEPS.length){
+                label.textContent = 'Далее';
+                main.textContent = `Шаг ${cur.id} · ${cur.title}`;
+                time.style.display='none';
+                stop.style.display='none';
+                arrow.style.display='inline';
+                pill.classList.add('visible');
+                pill.onclick = ()=> document.querySelector(`.step-card[data-step-id="${cur.id}"]`)?.scrollIntoView({behavior:'smooth', block:'center'});
+            } else {
+                pill.classList.remove('visible');
+                pill.onclick = null;
+            }
+        }
+    }
+
+    /* ============================================ */
+    /* === ЗАВЕРШЕНИЕ =============================== */
+    /* ============================================ */
+
+    function celebrate(){
+        if(typeof confetti === 'function'){
+            confetti({particleCount:220, spread:110, origin:{y:0.6}, colors:['#B23A2E','#D99A3D','#4F7A43']});
+        }
+        let modal = document.createElement('div');
+        modal.className = 'completion-modal';
+        modal.innerHTML = `<div class="completion-card"><div class="emoji">🌶️🎉</div><h3>Шедевр готов!</h3><p>Ваши фаршированные перцы удались! Подавайте со сметаной и зеленью.</p><button class="completion-btn" onclick="this.closest('.completion-modal').remove()">Вкусно!</button></div>`;
+        document.body.appendChild(modal);
+        setTimeout(()=>modal.remove(), 5000);
+    }
+
+    /* ============================================ */
+    /* === ПОДШАГИ И ОТМЕТКА ========================= */
+    /* ============================================ */
+
+    function allSubstepsDone(stepId){
+        let step = STEPS.find(s=>s.id===stepId);
+        if(!step || !step.substeps) return true;
+        let substate = substepsState[stepId] || {};
+        return step.substeps.every((_,idx)=>substate[idx]===true);
+    }
+
+    function updateSubstep(stepId, idx, checked){
+        if(!substepsState[stepId]) substepsState[stepId]={};
+        substepsState[stepId][idx]=checked;
+        saveAll();
+
+        let allDone = allSubstepsDone(stepId);
+        let timerState = timersState[stepId];
+        let timerFinished = !STEPS.find(s=>s.id===stepId)?.timer || (timerState && timerState.seconds===0);
+
+        if(allDone && timerFinished && !completedSteps.includes(stepId)){
+            completedSteps.push(stepId);
+            saveAll();
+            showToast(`✓ Шаг ${stepId} выполнен!`);
+            if(completedSteps.length === STEPS.length) celebrate();
+        }
+        renderSteps();
+    }
+
+    function toggleStep(stepId){
+        if(completedSteps.includes(stepId)){
+            completedSteps = completedSteps.filter(id=>id!==stepId);
+            saveAll();
+            renderSteps();
+            showToast(`Шаг ${stepId} отменён`);
+            return;
+        }
+        if(!allSubstepsDone(stepId)){
+            showToast(`⚠️ Выполните все пункты этого шага`);
+            return;
+        }
+        let step = STEPS.find(s=>s.id===stepId);
+        let timerState = timersState[stepId];
+        if(step?.timer && timerState && timerState.seconds > 0 && timerState.status!=='stopped'){
+            showToast(`⏲️ Дождитесь окончания таймера`);
+            return;
+        }
+        completedSteps.push(stepId);
+        saveAll();
+        renderSteps();
+        showToast(`✓ Шаг ${stepId} готов!`);
+        if(completedSteps.length === STEPS.length) celebrate();
+    }
+
+    /* ============================================ */
+    /* === ТАЙМЕР ==================================== */
+    /* ============================================ */
+
+    function startTimer(stepId, totalSec){
+        if(timersState[stepId] && timersState[stepId].status==='running') return;
+        timersState[stepId] = { status:'running', seconds:totalSec, total:totalSec, timestamp:Date.now() };
+        saveAll();
+        currentActiveTimerId = stepId;
+        updateFloatPill();
+        showToast(`⏲️ Таймер запущен (${Math.floor(totalSec/60)} мин)`);
+        runTimerTick(stepId);
+        renderSteps();
+    }
+
+    function runTimerTick(stepId){
+        let lastUpdate = Date.now();
+        function tick(){
+            if(document.hidden){ requestAnimationFrame(tick); return; }
+            let cur = timersState[stepId];
+            if(!cur || cur.status !== 'running') return;
+
+            let now = Date.now();
+            let delta = Math.floor((now - lastUpdate)/1000);
+            if(delta > 0){
+                cur.seconds = Math.max(0, cur.seconds - delta);
+                cur.timestamp = now;
+                lastUpdate = now;
+                saveAll();
+
+                if(cur.seconds <= 0){
+                    cur.status = 'stopped';
+                    cur.seconds = 0;
+                    saveAll();
+                    playSound();
+                    showToast(`⏰ Таймер завершён! Перцы протушились`);
+                    if(currentActiveTimerId === stepId) currentActiveTimerId = null;
+
+                    if(allSubstepsDone(stepId) && !completedSteps.includes(stepId)){
+                        completedSteps.push(stepId);
+                        saveAll();
+                        showToast(`✓ Шаг ${stepId} автоматически отмечен!`);
+                        if(completedSteps.length === STEPS.length) celebrate();
+                    }
+                    renderSteps();
+                    updateFloatPill();
+                    return;
+                }
+                updateTimerUI(stepId);
+                updateFloatPill();
+            }
+            requestAnimationFrame(tick);
+        }
+        requestAnimationFrame(tick);
+    }
+
+    function resumeTimers(){
+        for(let key in timersState){
+            let state = timersState[key];
+            if(!state || state.status !== 'running' || !state.timestamp) continue;
+            let stepId = parseInt(key);
+            let elapsed = Math.floor((Date.now() - state.timestamp)/1000);
+            state.seconds = Math.max(0, state.seconds - elapsed);
+            if(state.seconds <= 0){
+                state.status = 'stopped';
+                state.seconds = 0;
+                if(allSubstepsDone(stepId) && !completedSteps.includes(stepId)){
+                    completedSteps.push(stepId);
+                }
+            } else {
+                state.timestamp = Date.now();
+                currentActiveTimerId = stepId;
+                runTimerTick(stepId);
+            }
+        }
+        saveAll();
+    }
+
+    function stopTimer(stepId){
+        let state = timersState[stepId];
+        if(!state) return;
+        state.status = 'stopped';
+        state.seconds = state.total;
+        delete state.timestamp;
+        if(currentActiveTimerId === stepId) currentActiveTimerId = null;
+        saveAll();
+        renderSteps();
+        updateFloatPill();
+        showToast(`⏹️ Таймер остановлен`);
+    }
+
+    function updateTimerUI(stepId){
+        let state = timersState[stepId];
+        if(!state) return;
+        let disp = document.querySelector(`[data-timer-display="${stepId}"]`);
+        if(disp) disp.textContent = formatTime(state.seconds);
+        let liquid = document.querySelector(`[data-pot-liquid="${stepId}"]`);
+        if(liquid) liquid.style.height = (100 - (state.seconds/state.total*100)).toFixed(1) + '%';
+        updateFloatPill();
+    }
+
+    /* ============================================ */
+    /* === ИНГРЕДИЕНТЫ ================================ */
+    /* ============================================ */
+
+    /** Переводит крупные значения в удобные единицы: 1000 г -> 1 кг, 1500 мл -> 1.5 л. */
+    function formatAmount(amount, unit){
+        if((unit==='г' || unit==='мл') && amount>=1000){
+            let converted = Math.round((amount/1000)*10)/10;
+            return { amount:converted, unit: unit==='г'?'кг':'л' };
+        }
+        return { amount: Number.isInteger(amount)?amount:Math.round(amount*10)/10, unit };
+    }
+
+    function renderIngredients(){
+        let container = document.getElementById('ingredientsContainer');
+        let cats = [...new Set(INGREDIENTS_BASE.items.map(i=>i.category))];
+        let html = '';
+        cats.forEach(cat=>{
+            html += `<div class="ing-category">${cat}</div>`;
+            INGREDIENTS_BASE.items.filter(i=>i.category===cat).forEach(ing=>{
+                let rawAmt = (ing.baseAmount/INGREDIENTS_BASE.basePortions)*portions;
+                let f = formatAmount(rawAmt, ing.unit);
+                let ch = checkedIngredients.includes(ing.id);
+                html += `<div class="ingredient-item ${ch?'checked':''}" data-ing-id="${ing.id}"><input type="checkbox" ${ch?'checked':''}><span class="ingredient-name">${ing.name}</span><span class="ingredient-amount">${f.amount} ${f.unit}</span></div>`;
+            });
+        });
+        container.innerHTML = html;
+        document.querySelectorAll('.ingredient-item').forEach(el=>{
+            let cb = el.querySelector('input');
+            let id = el.dataset.ingId;
+            cb.addEventListener('change', ()=>{
+                if(cb.checked){ if(!checkedIngredients.includes(id)) checkedIngredients.push(id); el.classList.add('checked'); }
+                else{ checkedIngredients = checkedIngredients.filter(i=>i!==id); el.classList.remove('checked'); }
+                saveAll();
+            });
+            el.addEventListener('click', (e)=>{ if(e.target!==cb) cb.click(); });
+        });
+    }
+
+    function updatePortions(delta){
+        let old = portions;
+        portions = clampPortions(portions + delta);
+        maybeJokeAboutPortions(portions, old);
+        document.getElementById('portionsInput').value = portions;
+        renderIngredients();
+        saveAll();
+    }
+
+    /* ============================================ */
+    /* === ФОТО БЛЮДА ================================= */
+    /* ============================================ */
+
+    /** Сжимает загруженный файл до разумного размера через canvas (макс. сторона
+        1200px, JPEG 82%), чтобы фото из телефона не переполняли localStorage.
+        Параметры: file — объект File. Возвращает Promise<строка dataURL>. */
+    function resizeImageFile(file, maxDim, quality){
+        return new Promise((resolve, reject)=>{
+            let reader = new FileReader();
+            reader.onload = (e)=>{
+                let img = new Image();
+                img.onload = ()=>{
+                    let width = img.width, height = img.height;
+                    if(width > maxDim || height > maxDim){
+                        if(width > height){ height = Math.round(height * (maxDim/width)); width = maxDim; }
+                        else{ width = Math.round(width * (maxDim/height)); height = maxDim; }
+                    }
+                    let canvas = document.createElement('canvas');
+                    canvas.width = width;
+                    canvas.height = height;
+                    let ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, width, height);
+                    resolve(canvas.toDataURL('image/jpeg', quality));
+                };
+                img.onerror = ()=>reject(new Error('Не удалось декодировать изображение'));
+                img.src = e.target.result;
+            };
+            reader.onerror = ()=>reject(new Error('Не удалось прочитать файл'));
+            reader.readAsDataURL(file);
+        });
+    }
+
+    function savePhotos(){
+        try{
+            localStorage.setItem('recipe_photos', JSON.stringify(photos));
+        }catch(e){
+            console.error('Ошибка сохранения фото (вероятно, переполнено хранилище):', e);
+            photos.pop();
+            showToast('⚠️ Не хватило места для фото — удалите старые и попробуйте снова');
+        }
+    }
+
+    function deletePhoto(id){
+        photos = photos.filter(p=>p.id!==id);
+        savePhotos();
+        renderPhotos();
+        showToast('Фото удалено');
+    }
+
+    function openLightbox(src){
+        let overlay = document.createElement('div');
+        overlay.className = 'lightbox';
+        let img = document.createElement('img');
+        img.src = src;
+        img.alt = 'Фото блюда';
+        let closeBtn = document.createElement('button');
+        closeBtn.className = 'lightbox-close';
+        closeBtn.setAttribute('aria-label', 'Закрыть');
+        closeBtn.innerHTML = '<i class="fas fa-times"></i>';
+        overlay.appendChild(img);
+        overlay.appendChild(closeBtn);
+        overlay.addEventListener('click', (e)=>{ if(e.target===overlay || e.target.closest('.lightbox-close')) overlay.remove(); });
+        document.body.appendChild(overlay);
+    }
+
+    /** Отрисовывает полосу миниатюр + плитку "Добавить". Фото хранятся как
+        dataURL, поэтому фон миниатюры задаётся через JS (по-другому картинку
+        из localStorage в CSS-класс не подставить). */
+    function renderPhotos(){
+        let strip = document.getElementById('photoStrip');
+        let hint = document.getElementById('photoEmptyHint');
+        if(!strip) return;
+
+        let html = '';
+        photos.forEach(p=>{
+            html += `<div class="photo-thumb" data-photo-id="${p.id}"><button class="photo-delete" data-photo-delete="${p.id}" aria-label="Удалить фото"><i class="fas fa-times"></i></button></div>`;
+        });
+        html += `<label class="photo-add" for="photoInput"><i class="fas fa-plus"></i><span>Добавить</span></label>`;
+        strip.innerHTML = html;
+
+        strip.querySelectorAll('.photo-thumb').forEach(el=>{
+            let id = el.dataset.photoId;
+            let photo = photos.find(p=>p.id===id);
+            if(photo) el.style.backgroundImage = `url(${photo.src})`;
+            el.addEventListener('click', (e)=>{
+                if(e.target.closest('.photo-delete')) return;
+                if(photo) openLightbox(photo.src);
+            });
+        });
+        strip.querySelectorAll('[data-photo-delete]').forEach(btn=>{
+            btn.addEventListener('click', (e)=>{ e.stopPropagation(); deletePhoto(btn.dataset.photoDelete); });
+        });
+
+        if(hint) hint.style.display = photos.length ? 'none' : 'flex';
+    }
+
+    /* ============================================ */
+    /* === ОТРИСОВКА ШАГОВ ============================ */
+    /* ============================================ */
+
+    function renderSteps(){
+        let container = document.getElementById('stepsContainer');
+        if(!container) return;
+        let curGroup = '', html = '';
+        let curStep = getCurrentStep();
+
+        STEPS.forEach((step, i)=>{
+            if(step.group !== curGroup){ curGroup = step.group; html += `<div class="step-group-title">${step.group}</div>`; }
+
+            let isDone = completedSteps.includes(step.id);
+            let isLocked = !isStepAvailable(step) && !isDone;
+            let isCurrent = curStep?.id === step.id;
+            let timerState = timersState[step.id];
+            let isTimerActive = timerState && timerState.status === 'running';
+            let substate = substepsState[step.id] || {};
+
+            let substepsHtml = '<div class="substeps">';
+            step.substeps.forEach((sub, idx)=>{
+                let ch = substate[idx] === true;
+                substepsHtml += `<div class="substep ${ch?'checked':''}"><input type="checkbox" class="substep-cb" data-step="${step.id}" data-idx="${idx}" ${ch?'checked':''} ${isLocked||isDone?'disabled':''}><span>${sub}</span></div>`;
+            });
+            substepsHtml += '</div>';
+
+            /* Кнопка запуска таймера теперь отдельно от чек-листа, а не внутри строки
+               последнего подшага — раньше это ломало вёрстку строки на некоторых экранах. */
+            let timerHtml = '';
+            if(step.timer){
+                if(isTimerActive){
+                    let currSec = timerState.seconds;
+                    let pct = (100 - (currSec/timerState.total*100));
+                    timerHtml = `<div class="timer-control"><div class="pot">
+                        <div class="pot-vessel"><div class="pot-liquid" data-pot-liquid="${step.id}" style="height:${pct.toFixed(1)}%"><div class="pot-bubble" style="left:8px; animation-delay:0s;"></div><div class="pot-bubble" style="left:20px; animation-delay:.7s;"></div><div class="pot-bubble" style="left:32px; animation-delay:1.4s;"></div></div></div>
+                        <span class="timer-time" data-timer-display="${step.id}">${formatTime(currSec)}</span>
+                        <button class="timer-icon-btn" data-timer-stop="${step.id}" aria-label="Остановить таймер"><i class="fas fa-stop"></i></button>
+                    </div></div>`;
+                } else if(!isDone && !isLocked){
+                    timerHtml = `<div class="timer-control"><button class="timer-btn" data-timer-start="${step.id}"><i class="fas fa-hourglass-start"></i> Запустить таймер (${step.timer.label})</button></div>`;
+                }
+            }
+
+            let hintHtml = '';
+            if(isCurrent && step.id===7 && timersState[7]?.status==='running'){
+                hintHtml = `<div class="step-desc" style="padding-left:51px; color:var(--ember); font-weight:600;"><i class="fas fa-lightbulb"></i> Пока тушится — просто ждите, готовить параллельно тут нечего</div>`;
+            }
+
+            let cardClasses = `step-card ${isDone?'done':''} ${isLocked?'locked':''} ${isCurrent?'current':''} ${firstStepsRender?'enter':''}`;
+            let cardStyle = firstStepsRender ? `style="animation-delay:${Math.min(i*40,320)}ms"` : '';
+
+            html += `<div class="${cardClasses}" data-step-id="${step.id}" ${cardStyle}>
+                <div class="step-content">
+                    <div class="step-header">
+                        <div class="step-number">${step.id}</div>
+                        <div class="step-title">${step.title}</div>
+                        ${step.timer ? `<div class="step-timer-badge"><i class="far fa-clock"></i> ${step.timer.label}</div>` : ''}
+                        ${isCurrent?'<span class="current-tag">Сейчас</span>':''}
+                    </div>
+                    <div class="step-desc">${step.desc}</div>
+                    ${substepsHtml}
+                    ${timerHtml}
+                    ${hintHtml}
+                </div>
+                <button class="step-done-btn" data-step-toggle="${step.id}" ${isDone||isLocked?'disabled':''}>
+                    ${isDone?'<i class="fas fa-check-circle"></i> Готово':'<i class="far fa-check-circle"></i> Отметить выполненным'}
+                </button>
+            </div>`;
+        });
+
+        container.innerHTML = html;
+        firstStepsRender = false;
+
+        document.querySelectorAll('[data-step-toggle]').forEach(btn=>btn.addEventListener('click', ()=>toggleStep(parseInt(btn.dataset.stepToggle))));
+        document.querySelectorAll('[data-timer-start]').forEach(btn=>btn.addEventListener('click', ()=>{
+            let sid = parseInt(btn.dataset.timerStart);
+            let s = STEPS.find(s=>s.id===sid);
+            if(s?.timer) startTimer(sid, s.timer.duration);
+        }));
+        document.querySelectorAll('[data-timer-stop]').forEach(btn=>btn.addEventListener('click', ()=>stopTimer(parseInt(btn.dataset.timerStop))));
+        document.querySelectorAll('.substep-cb').forEach(cb=>cb.addEventListener('change', function(){
+            updateSubstep(parseInt(this.dataset.step), parseInt(this.dataset.idx), this.checked);
+        }));
+
+        updateStatusAndDots();
+        updateFloatPill();
+    }
+
+    /* ============================================ */
+    /* === СБРОС ======================================= */
+    /* ============================================ */
+
+    function resetAll(){
+        if(confirm('🍽️ Сбросить весь прогресс приготовления?')){
+            completedSteps=[]; checkedIngredients=[]; substepsState={}; timersState={};
+            currentActiveTimerId=null; portions=INGREDIENTS_BASE.basePortions;
+            document.getElementById('portionsInput').value = portions;
+            saveAll();
+            renderIngredients();
+            renderSteps();
+            updateFloatPill();
+            showToast('Прогресс сброшен');
+        }
+    }
+
+    /* ============================================ */
+    /* === ТЁМНАЯ ТЕМА ================================= */
+    /* ============================================ */
+
+    function applyTheme(){
+        document.documentElement.dataset.theme = isDark ? 'dark' : 'light';
+        document.getElementById('themeBtn').innerHTML = isDark ? '<i class="fa-solid fa-sun"></i>' : '<i class="fa-solid fa-moon"></i>';
+    }
+
+    /* ============================================ */
+    /* === WAKE LOCK =================================== */
+    /* ============================================ */
+
+    function initWakeLock(){
+        let btn = document.getElementById('wakeLockBtn');
+        if(!('wakeLock' in navigator)){ btn.style.display = 'none'; return; }
+        btn.addEventListener('click', async ()=>{
+            if(!wakeLock){
+                try{
+                    wakeLock = await navigator.wakeLock.request('screen');
+                    btn.classList.add('active');
+                    btn.innerHTML = '<i class="fas fa-check"></i> Экран активен';
+                    wakeLock.addEventListener('release', ()=>{
+                        wakeLock = null;
+                        btn.classList.remove('active');
+                        btn.innerHTML = '<i class="fas fa-sun"></i> Экран не гаснет';
+                    });
+                }catch(e){ showToast('Не удалось активировать'); }
+            } else {
+                wakeLock.release();
+            }
+        });
+    }
+
+    /* ============================================ */
+    /* === ИНИЦИАЛИЗАЦИЯ ================================ */
+    /* ============================================ */
+
+    function init(){
+        applyTheme();
+        let wasReset = checkAutoReset();
+
+        document.getElementById('portionsInput').value = portions;
+        if(!wasReset) resumeTimers();
+
+        renderIngredients();
+        renderSteps();
+        renderPhotos();
+
+        document.getElementById('photoInput').addEventListener('change', async function(){
+            let files = Array.from(this.files || []);
+            for(let file of files){
+                if(!file.type.startsWith('image/')) continue;
+                try{
+                    let dataUrl = await resizeImageFile(file, 1200, 0.82);
+                    photos.push({ id: Date.now().toString(36) + Math.random().toString(36).slice(2), src: dataUrl });
+                }catch(e){
+                    console.error('Ошибка обработки фото:', e);
+                    showToast('⚠️ Не удалось обработать одно из фото');
+                }
+            }
+            savePhotos();
+            renderPhotos();
+            this.value = '';
+        });
+
+        document.getElementById('portMinus').addEventListener('click', ()=>updatePortions(-1));
+        document.getElementById('portPlus').addEventListener('click', ()=>updatePortions(1));
+        document.getElementById('portionsInput').addEventListener('change', function(){
+            let old = portions;
+            portions = clampPortions(parseInt(this.value));
+            maybeJokeAboutPortions(portions, old);
+            this.value = portions;
+            renderIngredients();
+            saveAll();
+        });
+
+        document.getElementById('resetBtn').addEventListener('click', resetAll);
+
+        document.getElementById('startBtn').addEventListener('click', ()=>{
+            let cur = getCurrentStep();
+            let target = cur ? document.querySelector(`.step-card[data-step-id="${cur.id}"]`) : document.querySelector('.footer');
+            target?.scrollIntoView({behavior:'smooth', block:'center'});
+        });
+
+        document.getElementById('scrollTop').addEventListener('click', ()=>window.scrollTo({top:0, behavior:'smooth'}));
+        document.getElementById('scrollTop').addEventListener('keydown', (e)=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); window.scrollTo({top:0, behavior:'smooth'}); } });
+        document.getElementById('fpStop').addEventListener('click', (e)=>{ e.stopPropagation(); if(currentActiveTimerId) stopTimer(currentActiveTimerId); });
+
+        document.getElementById('themeBtn').addEventListener('click', ()=>{
+            isDark = !isDark;
+            localStorage.setItem('recipe_theme', isDark ? 'dark' : 'light');
+            applyTheme();
+        });
+
+        window.addEventListener('scroll', ()=>{
+            document.getElementById('scrollTop').classList.toggle('visible', window.scrollY > 200);
+        });
+
+        initWakeLock();
+    }
+
+    document.addEventListener('DOMContentLoaded', init);
+})();
+</script>
+</body>
+</html>

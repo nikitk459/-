@@ -1,0 +1,1033 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="description" content="Мусакас — греческая таверна: баклажаны, мясная начинка и бешамель. Рецепт, который всегда показывает, что делать прямо сейчас">
+<meta name="theme-color" content="#2B6E8F">
+<title>🇬🇷 Мусакас</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Domine:wght@500;600;700&family=Hanken+Grotesk:wght@400;500;600;700;800&family=PT+Mono&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1"></script>
+
+<style>
+    *{ margin:0; padding:0; box-sizing:border-box; }
+
+    :root{
+        --terracotta:#C85C17;
+        --terracotta-dark:#A84510;
+        --aegean:#2B6E8F;
+        --aegean-dark:#1F4F68;
+        --olive:#5A7D3C;
+        --sand:#FDF8F0;
+        --surface:#FFFFFF;
+        --text:#2E241F;
+        --text-soft:#8B7768;
+        --line:rgba(43,110,143,0.16);
+        --shadow-sm:0 4px 14px rgba(0,0,0,0.07);
+        --shadow-md:0 10px 26px rgba(0,0,0,0.11);
+        --shadow-lg:0 22px 46px rgba(0,0,0,0.24);
+        --inset-highlight:rgba(255,255,255,0.6);
+        --r-card:4px;
+        --r-full:999px;
+        --ease:cubic-bezier(.22,.9,.32,1);
+    }
+
+    [data-theme="dark"]{
+        --sand:#1D211F;
+        --surface:#262B29;
+        --text:#EFE8DC;
+        --text-soft:#AEB6AF;
+        --line:rgba(255,255,255,0.12);
+        --shadow-sm:0 4px 14px rgba(0,0,0,0.3);
+        --shadow-md:0 10px 26px rgba(0,0,0,0.36);
+        --shadow-lg:0 22px 46px rgba(0,0,0,0.5);
+        --inset-highlight:rgba(255,255,255,0.04);
+    }
+
+    @media (prefers-reduced-motion: reduce){
+        *,*::before,*::after{
+            animation-duration:0.01ms !important;
+            animation-iteration-count:1 !important;
+            transition-duration:0.01ms !important;
+            scroll-behavior:auto !important;
+        }
+    }
+
+    html{ scroll-behavior:smooth; }
+    body{
+        background:var(--sand);
+        font-family:'Hanken Grotesk',sans-serif;
+        color:var(--text);
+        min-height:100vh;
+        transition:background .3s var(--ease), color .3s var(--ease);
+        -webkit-font-smoothing:antialiased;
+        position:relative;
+    }
+    body::before{
+        content:"🫒";
+        position:fixed; bottom:2vh; right:-2vw;
+        font-size:22vw;
+        opacity:.05;
+        transform:rotate(-15deg);
+        pointer-events:none;
+        z-index:0;
+    }
+    ::selection{ background:var(--aegean); color:#fff; }
+    :focus-visible{ outline:3px solid var(--aegean-dark); outline-offset:2px; }
+
+    .app{ max-width:820px; margin:0 auto; padding:18px 18px 110px; position:relative; z-index:1; }
+    @media (min-width:768px){ .app{ padding:40px 30px 130px; } }
+
+    /* ===== HEADER ===== */
+    .header{ display:flex; justify-content:space-between; align-items:center; margin-bottom:18px; padding:13px 24px; background:var(--surface); border-bottom:3px solid var(--aegean); box-shadow:var(--shadow-sm); }
+    .logo{ display:flex; align-items:center; gap:11px; }
+    .logo-icon{ font-size:30px; display:inline-block; animation:iconWiggle 3.2s ease-in-out infinite; }
+    @keyframes iconWiggle{ 0%,100%{ transform:rotate(-6deg); } 50%{ transform:rotate(6deg); } }
+    .logo-text{ font-family:'Domine',serif; font-weight:700; font-size:17px; color:var(--terracotta-dark); }
+    .logo-text span{ color:var(--aegean); font-weight:500; }
+    .theme-btn{ background:transparent; border:1.5px solid var(--aegean); border-radius:50%; width:38px; height:38px; color:var(--aegean); cursor:pointer; transition:.2s var(--ease); display:flex; align-items:center; justify-content:center; }
+    .theme-btn:hover{ background:var(--aegean); color:#fff; }
+
+    /* ===== PHOTO GALLERY ===== */
+    .photo-card{ background:var(--surface); padding:18px 20px; margin-bottom:18px; box-shadow:var(--shadow-sm), inset 0 1px 0 var(--inset-highlight); border-left:4px solid var(--terracotta); }
+    .photo-strip{ display:flex; gap:9px; flex-wrap:wrap; }
+    .photo-thumb{ width:78px; height:78px; background-size:cover; background-position:center; position:relative; cursor:pointer; box-shadow:var(--shadow-sm); transition:transform .25s var(--ease); flex-shrink:0; animation:photoIn .3s var(--ease); }
+    @keyframes photoIn{ from{ opacity:0; transform:scale(.8); } to{ opacity:1; transform:scale(1); } }
+    .photo-thumb:hover{ transform:scale(1.05); }
+    .photo-thumb:active{ transform:scale(.95); }
+    .photo-delete{ position:absolute; top:-7px; right:-7px; width:22px; height:22px; border-radius:50%; background:var(--terracotta); color:#fff; border:2px solid var(--surface); display:flex; align-items:center; justify-content:center; font-size:10px; cursor:pointer; }
+    .photo-add{ width:78px; height:78px; border:1.5px dashed var(--line); background:transparent; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:4px; color:var(--text-soft); cursor:pointer; font-size:10px; font-weight:600; text-align:center; transition:.2s var(--ease); flex-shrink:0; }
+    .photo-add:hover{ border-color:var(--aegean); color:var(--aegean); }
+    .photo-add:active{ transform:scale(.95); }
+    .photo-add i{ font-size:16px; }
+    .photo-empty-hint{ display:none; align-items:center; gap:9px; color:var(--text-soft); font-size:12px; margin-top:12px; padding-top:12px; border-top:1px dashed var(--line); }
+    .photo-empty-hint i{ font-size:18px; opacity:.4; }
+
+    .lightbox{ position:fixed; inset:0; background:rgba(20,17,14,.9); z-index:3000; display:flex; align-items:center; justify-content:center; padding:24px; animation:fadeIn .2s var(--ease); }
+    @keyframes fadeIn{ from{opacity:0;} to{opacity:1;} }
+    .lightbox img{ max-width:100%; max-height:100%; box-shadow:var(--shadow-lg); }
+    .lightbox-close{ position:absolute; top:20px; right:20px; width:42px; height:42px; border-radius:50%; background:rgba(255,255,255,.15); border:none; color:#fff; font-size:16px; cursor:pointer; }
+
+    /* ===== HERO ===== */
+    .hero{ text-align:center; margin-bottom:18px; background:var(--surface); padding:32px 20px; box-shadow:var(--shadow-sm), inset 0 1px 0 var(--inset-highlight); border-top:4px solid var(--terracotta); border-bottom:4px solid var(--aegean); animation:rise .55s var(--ease) both; }
+    @keyframes rise{ from{opacity:0; transform:translateY(12px);} to{opacity:1; transform:translateY(0);} }
+    .hero h1{ font-family:'Domine',serif; font-weight:700; font-size:32px; color:var(--terracotta-dark); }
+    @media (min-width:600px){ .hero h1{ font-size:42px; } }
+    .hero-sub{ font-family:'Domine',serif; font-style:italic; font-size:15px; color:var(--aegean); margin-top:4px; }
+    .hero p{ color:var(--text-soft); margin-top:8px; font-size:13.5px; }
+
+    .status-line{ margin-top:16px; display:inline-flex; align-items:center; gap:10px; background:var(--sand); padding:9px 18px; border-radius:var(--r-full); font-size:13.5px; font-weight:700; color:var(--aegean-dark); }
+    .status-line .dot{ width:8px; height:8px; border-radius:50%; background:var(--terracotta); flex-shrink:0; opacity:.5; }
+    .status-line .dot.active{ opacity:1; background:var(--aegean); animation:pulse 1.6s ease-in-out infinite; }
+    @keyframes pulse{ 0%,100%{ box-shadow:0 0 0 0 rgba(43,110,143,0.35);} 50%{ box-shadow:0 0 0 6px rgba(43,110,143,0);} }
+
+    .start-btn{ background:var(--aegean); border:none; padding:16px 26px; width:100%; color:#fff; font-weight:700; font-size:15.5px; cursor:pointer; margin-bottom:20px; box-shadow:0 14px 28px -12px rgba(31,79,104,0.5); transition:transform .2s var(--ease), background .2s; display:flex; align-items:center; justify-content:center; gap:10px; }
+    .start-btn:hover{ background:var(--aegean-dark); transform:translateY(-2px); }
+    .start-btn:active{ transform:scale(.97); }
+
+    /* ===== PROGRESS DOTS ===== */
+    .dots-card{ background:var(--surface); padding:16px 20px; margin-bottom:18px; box-shadow:var(--shadow-sm); border-left:4px solid var(--aegean); }
+    .dots-row{ display:flex; flex-wrap:wrap; gap:6px; }
+    .step-dot{ width:11px; height:11px; background:rgba(43,110,143,0.16); border:none; padding:0; cursor:pointer; transition:transform .2s var(--ease), background .2s var(--ease); }
+    .step-dot:hover{ transform:scale(1.3); }
+    .step-dot.done{ background:var(--terracotta); animation:dotPop .35s var(--ease); }
+    @keyframes dotPop{ 0%{ transform:scale(1); } 50%{ transform:scale(1.6); } 100%{ transform:scale(1); } }
+    .step-dot.current{ background:var(--aegean); transform:scale(1.3); }
+    .dots-label{ margin-top:9px; font-size:12.5px; color:var(--text-soft); }
+
+    /* ===== CARDS COMMON ===== */
+    .card{ background:var(--surface); padding:22px; margin-bottom:18px; box-shadow:var(--shadow-sm), inset 0 1px 0 var(--inset-highlight); transition:transform .25s var(--ease); }
+    .card:hover{ transform:translateY(-2px); }
+    .card-header{ display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:14px; margin-bottom:16px; padding-bottom:12px; border-bottom:1px solid var(--line); }
+    .card-header h2{ font-family:'Domine',serif; font-weight:700; font-size:19px; color:var(--terracotta-dark); }
+
+    .portion-control{ display:flex; align-items:center; gap:9px; background:var(--sand); padding:5px 15px; border-radius:var(--r-full); }
+    .portion-control button{ background:var(--aegean); border:none; width:30px; height:30px; border-radius:50%; color:#fff; font-weight:700; cursor:pointer; transition:transform .15s var(--ease); box-shadow:inset 0 1px 0 rgba(255,255,255,.35), 0 3px 6px rgba(31,79,104,.3); }
+    .portion-control button:hover{ transform:scale(1.08); }
+    .portion-control button:active{ transform:scale(.92); }
+    .portion-input{ width:36px; text-align:center; border:none; background:transparent; font-weight:800; font-size:15px; color:var(--text); font-family:'PT Mono',monospace; outline:none; }
+    .portion-control span{ font-size:12px; color:var(--text-soft); font-weight:600; }
+
+    .ing-category{ font-weight:700; color:var(--terracotta-dark); font-size:12px; text-transform:uppercase; letter-spacing:.06em; margin:16px 0 8px; }
+    .ing-category:first-child{ margin-top:0; }
+    .ingredient-item{ background:var(--sand); padding:11px 15px; display:flex; align-items:center; gap:12px; margin-bottom:7px; cursor:pointer; transition:opacity .2s var(--ease), transform .2s var(--ease); }
+    .ingredient-item:hover{ transform:translateX(3px); }
+    .ingredient-item:active{ transform:scale(.98); }
+    .ingredient-item input{ width:19px; height:19px; cursor:pointer; accent-color:var(--aegean); flex-shrink:0; }
+    .ingredient-item input:checked{ animation:checkPop .3s var(--ease); }
+    @keyframes checkPop{ 0%{ transform:scale(1); } 45%{ transform:scale(1.35); } 100%{ transform:scale(1); } }
+    .ingredient-name{ flex:1; font-weight:600; font-size:14px; }
+    .ingredient-amount{ background:var(--surface); padding:4px 12px; border-radius:var(--r-full); font-size:12px; font-weight:700; color:var(--aegean-dark); font-family:'PT Mono',monospace; border:1px solid var(--line); }
+    .ingredient-item.checked{ opacity:.55; }
+    .ingredient-item.checked .ingredient-name{ text-decoration:line-through; }
+
+    .wake-btn{ width:100%; background:var(--sand); border:1.5px solid var(--line); color:var(--aegean-dark); padding:12px; border-radius:var(--r-full); margin-top:16px; font-weight:700; font-size:13px; cursor:pointer; transition:background .2s; }
+    .wake-btn:hover{ background:var(--line); }
+    .wake-btn.active{ background:var(--olive); border-color:var(--olive); color:#fff; }
+
+    .control-panel{ display:flex; justify-content:flex-end; align-items:center; background:var(--surface); padding:11px 20px; border-radius:var(--r-full); margin-bottom:20px; box-shadow:var(--shadow-sm); }
+    .reset-btn{ background:none; border:none; color:var(--text-soft); font-weight:700; font-size:12.5px; cursor:pointer; display:flex; align-items:center; gap:7px; }
+    .reset-btn:hover{ color:var(--terracotta); }
+
+    /* ===== STEPS ===== */
+    .step-group-title{ font-family:'Domine',serif; font-weight:700; font-size:22px; color:var(--terracotta-dark); margin:34px 0 14px; padding-bottom:5px; border-bottom:2px solid var(--aegean); display:inline-block; }
+    .step-group-title:first-of-type{ margin-top:0; }
+
+    .step-card{ background:var(--surface); margin-bottom:12px; border-left:3px solid transparent; position:relative; transition:border-color .3s var(--ease), opacity .3s var(--ease), transform .25s var(--ease), box-shadow .25s var(--ease); box-shadow:var(--shadow-sm), inset 0 1px 0 var(--inset-highlight); }
+    .step-card.enter{ animation:cardIn .5s var(--ease) both; }
+    @keyframes cardIn{ from{opacity:0; transform:translateY(10px);} to{opacity:1; transform:translateY(0);} }
+    .step-card.current{ border-left-color:var(--aegean); box-shadow:var(--shadow-md); }
+    .step-card:not(.locked):not(.done):hover{ transform:translateX(2px); }
+    .step-card.done{ opacity:.6; border-left-color:var(--terracotta); }
+    .step-card.locked{ opacity:.5; }
+    .step-card.locked::after{ content:"\f023"; font-family:"Font Awesome 6 Free"; font-weight:900; position:absolute; top:18px; right:18px; font-size:14px; color:var(--text-soft); opacity:.6; }
+    .step-content{ padding:20px; }
+    .step-header{ display:flex; align-items:center; gap:13px; margin-bottom:11px; flex-wrap:wrap; }
+    .step-number{ width:36px; height:36px; display:flex; align-items:center; justify-content:center; font-family:'PT Mono',monospace; font-weight:700; font-size:14px; color:#fff; background:var(--terracotta); flex-shrink:0; box-shadow:inset 0 2px 3px rgba(255,255,255,.25), 0 4px 10px rgba(168,69,16,.35); }
+    .step-card.current .step-number{ background:var(--aegean); animation:numberGlow 2s ease-in-out infinite; }
+    @keyframes numberGlow{ 0%,100%{ box-shadow:inset 0 2px 3px rgba(255,255,255,.25), 0 4px 10px rgba(31,79,104,.35), 0 0 0 0 rgba(43,110,143,.4); } 50%{ box-shadow:inset 0 2px 3px rgba(255,255,255,.25), 0 4px 10px rgba(31,79,104,.35), 0 0 0 7px rgba(43,110,143,0); } }
+    .step-title{ font-weight:700; font-size:16px; font-family:'Domine',serif; }
+    .step-timer-badge{ background:var(--sand); border-radius:var(--r-full); padding:5px 13px; font-size:11.5px; color:var(--aegean-dark); font-weight:600; }
+    .current-tag{ font-size:10px; font-weight:800; text-transform:uppercase; letter-spacing:.06em; background:var(--aegean); color:#fff; padding:4px 10px; }
+    .step-desc{ color:var(--text-soft); margin-bottom:14px; padding-left:49px; font-size:13.5px; line-height:1.5; }
+
+    .substeps{ padding-left:49px; margin-bottom:12px; display:flex; flex-direction:column; gap:2px; }
+    .substep{ display:grid; grid-template-columns:16px 1fr; align-items:start; gap:10px; padding:7px 0; cursor:pointer; }
+    .substep input{ width:16px; height:16px; cursor:pointer; accent-color:var(--aegean); margin-top:2px; }
+    .substep input:checked{ animation:checkPop .3s var(--ease); }
+    .substep.checked span{ text-decoration:line-through; opacity:.55; }
+    .substep span{ font-size:13.5px; line-height:1.4; }
+
+    .timer-control{ padding-left:49px; margin:12px 0 4px; }
+    .timer-btn{ background:var(--aegean); border:none; padding:10px 20px; font-weight:700; font-size:13px; color:#fff; cursor:pointer; display:inline-flex; align-items:center; gap:8px; transition:transform .15s var(--ease); }
+    .timer-btn:active{ transform:scale(.96); }
+
+    /* signature element: форма для запекания — золотистая бешамель "подрумянивается" сверху */
+    .bake-wrap{ display:inline-flex; align-items:center; gap:14px; background:var(--sand); padding:8px 16px 8px 10px; border-radius:var(--r-full); }
+    .bake-dish{ width:46px; height:26px; border:2.5px solid var(--terracotta-dark); position:relative; overflow:hidden; background:var(--surface); flex-shrink:0; }
+    .bake-glow{ position:absolute; inset:0; background:linear-gradient(180deg, transparent, var(--terracotta)); opacity:.35; animation:bakePulse 2.4s ease-in-out infinite; }
+    @keyframes bakePulse{ 0%,100%{ opacity:.2; } 50%{ opacity:.5; } }
+    .timer-time{ font-family:'PT Mono',monospace; font-size:14px; font-weight:700; color:var(--terracotta-dark); }
+    .timer-progress-track{ width:66px; height:4px; background:rgba(43,110,143,0.15); margin-top:3px; }
+    .timer-progress-fill{ height:100%; background:var(--aegean); width:0%; transition:width 1s linear; }
+    .timer-icon-btn{ background:var(--surface); border:1px solid var(--line); width:34px; height:34px; border-radius:50%; cursor:pointer; color:var(--aegean-dark); }
+
+    .step-done-btn{ width:calc(100% - 40px); margin:0 20px 20px; background:transparent; border:1.5px solid var(--aegean); padding:11px; font-weight:700; font-size:13.5px; cursor:pointer; color:var(--aegean); transition:background .2s, color .2s, transform .15s; }
+    .step-done-btn:hover:not(:disabled){ background:var(--aegean); color:#fff; }
+    .step-done-btn:active:not(:disabled){ transform:scale(.98); }
+    .step-done-btn:disabled{ opacity:.5; cursor:not-allowed; }
+    .step-card.done .step-done-btn{ background:var(--terracotta); border-color:var(--terracotta); color:#fff; opacity:1; }
+
+    /* ===== FLOATING PILL ===== */
+    .float-pill{ position:fixed; left:16px; right:16px; bottom:20px; z-index:200; background:var(--aegean-dark); color:#fff; padding:12px 12px 12px 20px; display:flex; align-items:center; justify-content:space-between; gap:14px; box-shadow:var(--shadow-lg); transform:translateY(140%); transition:transform .4s var(--ease); max-width:420px; margin:0 auto; cursor:pointer; border-left:4px solid var(--terracotta); }
+    .float-pill.visible{ transform:translateY(0); }
+    .float-pill .fp-label{ font-size:10.5px; text-transform:uppercase; letter-spacing:.08em; color:rgba(255,255,255,0.6); font-weight:700; }
+    .float-pill .fp-main{ font-size:13.5px; font-weight:700; }
+    .float-pill .fp-time{ font-family:'PT Mono',monospace; font-size:19px; font-weight:800; color:var(--terracotta); }
+    .fp-stop{ background:rgba(255,255,255,0.14); border:none; width:36px; height:36px; border-radius:50%; color:#fff; cursor:pointer; flex-shrink:0; }
+
+    .scroll-top{ position:fixed; bottom:86px; right:16px; width:44px; height:44px; background:var(--surface); display:flex; align-items:center; justify-content:center; cursor:pointer; opacity:0; visibility:hidden; transition:.25s; box-shadow:var(--shadow-md); color:var(--aegean); }
+    .scroll-top.visible{ opacity:1; visibility:visible; }
+
+    .toast{ position:fixed; bottom:100px; left:20px; right:20px; background:var(--terracotta-dark); color:#fff; padding:12px 20px; border-radius:var(--r-full); text-align:center; z-index:300; font-weight:600; font-size:13.5px; transform:translateY(100px); opacity:0; transition:.35s var(--ease); max-width:420px; margin:0 auto; }
+    .toast.show{ transform:translateY(0); opacity:1; }
+
+    .footer{ text-align:center; margin:48px 0 10px; font-family:'Domine',serif; font-weight:700; font-style:italic; font-size:19px; color:var(--aegean); opacity:.85; }
+
+    .completion-modal{ position:fixed; inset:0; background:rgba(20,17,14,0.75); backdrop-filter:blur(8px); z-index:2000; display:flex; align-items:center; justify-content:center; padding:20px; }
+    .completion-card{ background:var(--surface); padding:38px 32px; text-align:center; max-width:340px; animation:cardIn .4s var(--ease); border-top:4px solid var(--aegean); }
+    .completion-card .emoji{ font-size:50px; margin-bottom:14px; }
+    .completion-card h3{ font-family:'Domine',serif; font-size:26px; color:var(--terracotta-dark); margin-bottom:8px; }
+    .completion-card p{ color:var(--text-soft); font-size:13.5px; margin-bottom:20px; line-height:1.5; }
+    .completion-btn{ background:var(--aegean); border:none; padding:12px 28px; color:#fff; font-weight:700; cursor:pointer; width:100%; }
+</style>
+</head>
+<body>
+<div class="app">
+    <div class="header">
+        <div class="logo"><span class="logo-icon">🇬🇷</span><span class="logo-text">Мусакас <span>таверна</span></span></div>
+        <button class="theme-btn" id="themeBtn" aria-label="Переключить тёмную тему"><i class="fa-solid fa-moon"></i></button>
+    </div>
+
+    <div class="card photo-card">
+        <div class="card-header">
+            <h2><i class="fas fa-camera"></i> Фото</h2>
+        </div>
+        <div class="photo-strip" id="photoStrip"></div>
+        <div class="photo-empty-hint" id="photoEmptyHint">
+            <i class="fas fa-image"></i>
+            <span>Добавьте свои фото готового мусакаса</span>
+        </div>
+        <input type="file" id="photoInput" accept="image/*" multiple hidden>
+    </div>
+
+    <div class="hero">
+        <h1>Мусакас</h1>
+        <div class="hero-sub">Καλή όρεξη</div>
+        <p>🍆 баклажаны, мясная начинка, бешамель</p>
+        <div class="status-line" id="statusLine"><span class="dot active" id="statusDot"></span><span id="statusText">Готовим первый шаг</span></div>
+    </div>
+
+    <button class="start-btn" id="startBtn"><i class="fas fa-arrow-down"></i> Перейти к текущему шагу</button>
+
+    <div class="dots-card">
+        <div class="dots-row" id="dotsRow"></div>
+        <div class="dots-label" id="dotsLabel">Выполнено 0 из 12 шагов</div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <h2><i class="fas fa-basket-shopping"></i> Ингредиенты</h2>
+            <div class="portion-control">
+                <button id="portMinus" aria-label="Уменьшить количество порций">−</button>
+                <input type="text" id="portionsInput" value="4" class="portion-input" inputmode="numeric" pattern="[0-9]*" aria-label="Количество порций">
+                <button id="portPlus" aria-label="Увеличить количество порций">+</button>
+                <span>порц.</span>
+            </div>
+        </div>
+        <div id="ingredientsContainer"></div>
+        <button class="wake-btn" id="wakeLockBtn"><i class="fas fa-sun"></i> Экран не гаснет</button>
+    </div>
+
+    <div class="control-panel">
+        <button class="reset-btn" id="resetBtn"><i class="fas fa-undo-alt"></i> Сбросить весь прогресс</button>
+    </div>
+
+    <div id="stepsContainer"></div>
+    <div class="footer">🇬🇷 Καλή όρεξη — приятного аппетита!</div>
+</div>
+
+<div class="float-pill" id="floatPill">
+    <div><div class="fp-label" id="fpLabel">Далее</div><div class="fp-main" id="fpMain">Шаг 1</div></div>
+    <div style="display:flex; align-items:center; gap:12px;">
+        <span class="fp-time" id="fpTime" style="display:none;">00:00</span>
+        <button class="fp-stop" id="fpStop" style="display:none;" aria-label="Остановить таймер"><i class="fas fa-stop"></i></button>
+        <i class="fas fa-arrow-right" id="fpArrow" style="opacity:.6;"></i>
+    </div>
+</div>
+
+<div class="scroll-top" id="scrollTop" role="button" tabindex="0" aria-label="Наверх страницы"><i class="fas fa-arrow-up"></i></div>
+<div id="toast" class="toast"></div>
+<audio id="alarmAudio" preload="auto"><source src="https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3" type="audio/mpeg"></audio>
+
+<script>
+(function(){
+    "use strict";
+
+    const AUTO_RESET_SECONDS = 12 * 3600;
+    const MIN_PORTIONS = 1;
+    const MAX_PORTIONS = 50;
+    const PORTIONS_JOKE_THRESHOLD = 16;
+
+    /* ============================================ */
+    /* === ИНГРЕДИЕНТЫ =============================== */
+    /* ============================================ */
+
+    const INGREDIENTS_BASE = {
+        basePortions:4,
+        items:[
+            { id:'ing1', name:'Баклажаны', baseAmount:1000, unit:'г', category:'🍆 Овощная основа' },
+            { id:'ing2', name:'Картофель', baseAmount:500, unit:'г', category:'🍆 Овощная основа' },
+            { id:'ing3', name:'Пармезан', baseAmount:100, unit:'г', category:'🍆 Овощная основа' },
+            { id:'ing4', name:'Говяжий фарш', baseAmount:700, unit:'г', category:'🥩 Мясная начинка' },
+            { id:'ing5', name:'Лук репчатый', baseAmount:2, unit:'шт', category:'🥩 Мясная начинка' },
+            { id:'ing6', name:'Чеснок', baseAmount:4, unit:'зуб', category:'🥩 Мясная начинка' },
+            { id:'ing7', name:'Томатная паста', baseAmount:2, unit:'ст.л.', category:'🥩 Мясная начинка' },
+            { id:'ing8', name:'Молоко', baseAmount:800, unit:'мл', category:'🥛 Соус бешамель' },
+            { id:'ing9', name:'Сливочное масло', baseAmount:100, unit:'г', category:'🥛 Соус бешамель' },
+            { id:'ing10', name:'Мука', baseAmount:80, unit:'г', category:'🥛 Соус бешамель' },
+            { id:'ing11', name:'Мускатный орех', baseAmount:0.5, unit:'ч.л.', category:'🥛 Соус бешамель' }
+        ]
+    };
+
+    const STEPS = [
+        { id:1, group:'🍆 Параллельные процессы', title:'Подготовка баклажанов', desc:'Нарезаем и солим баклажаны', substeps:['Нарезать баклажаны кружками 1 см','Посолить и оставить на 20 мин','Обсушить бумажным полотенцем'], timer:null, requires:[] },
+        { id:2, group:'🍆 Параллельные процессы', title:'Обжарка баклажанов', desc:'Обжариваем до золотистого цвета', substeps:['Разогреть масло','Обжарить с двух сторон','Выложить на бумагу'], timer:{duration:600, label:'10 мин'}, requires:[] },
+        { id:3, group:'🍆 Параллельные процессы', title:'Обжарка картофеля', desc:'Доводим картофель до полуготовности', substeps:['Нарезать картофель кружками','Обжарить до золотистого цвета','Посолить'], timer:null, requires:[] },
+        { id:4, group:'🍆 Параллельные процессы', title:'Мясная начинка', desc:'Готовим ароматный фарш', substeps:['Обжарить лук и чеснок','Добавить фарш и обжарить','Ввести томатную пасту','Тушить 10 минут'], timer:null, requires:[] },
+        { id:5, group:'🍆 Параллельные процессы', title:'Соус бешамель', desc:'Варим классический соус', substeps:['Растопить масло','Добавить муку, обжарить','Влить молоко','Варить до загустения','Добавить мускатный орех'], timer:{duration:1200, label:'20 мин'}, requires:[] },
+        { id:6, group:'🏗️ Сборка', title:'Первый слой', desc:'Выкладываем картофель', substeps:['Смазать форму маслом','Выложить картофель плотным слоем'], timer:null, requires:[1,2,3,4,5] },
+        { id:7, group:'🏗️ Сборка', title:'Второй слой', desc:'Добавляем баклажаны', substeps:['Выложить баклажаны поверх картофеля'], timer:null, requires:[1,2,3,4,5] },
+        { id:8, group:'🏗️ Сборка', title:'Мясной слой', desc:'Распределяем фарш', substeps:['Выложить весь фарш ровным слоем'], timer:null, requires:[1,2,3,4,5] },
+        { id:9, group:'🏗️ Сборка', title:'Слой сыра', desc:'Посыпаем пармезаном', substeps:['Посыпать половиной сыра'], timer:null, requires:[1,2,3,4,5] },
+        { id:10, group:'🏗️ Сборка', title:'Заливка бешамелью', desc:'Покрываем соусом', substeps:['Залить весь соус','Разровнять','Посыпать оставшимся сыром'], timer:null, requires:[1,2,3,4,5] },
+        { id:11, group:'🔥 Выпекание', title:'Выпекание', desc:'Отправляем в духовку', substeps:['Разогреть духовку до 180°C','Выпекать 45 минут'], timer:{duration:2700, label:'45 мин'}, requires:[6,7,8,9,10] },
+        { id:12, group:'🍽️ Подача', title:'Отдых и подача', desc:'Даём настояться перед подачей', substeps:['Дать отдохнуть 15 минут','Нарезать порционно','Подавать с греческим салатом'], timer:null, requires:[11] }
+    ];
+
+    /* ============================================ */
+    /* === СОСТОЯНИЕ ================================ */
+    /* ============================================ */
+
+    let checkedIngredients = JSON.parse(localStorage.getItem('moussaka_ingredients') || '[]');
+    let completedSteps = JSON.parse(localStorage.getItem('moussaka_steps') || '[]');
+    let substepsState = JSON.parse(localStorage.getItem('moussaka_substeps') || '{}');
+    let timersState = JSON.parse(localStorage.getItem('moussaka_timers') || '{}');
+    let portions = clampPortions(parseInt(localStorage.getItem('moussaka_portions')) || INGREDIENTS_BASE.basePortions);
+    let currentActiveTimerId = null;
+    let wakeLock = null;
+    let lastActivity = localStorage.getItem('moussaka_last_activity');
+    let isDark = localStorage.getItem('moussaka_theme') === 'dark';
+    let photos = JSON.parse(localStorage.getItem('moussaka_photos') || '[]');
+    let firstStepsRender = true;
+
+    function clampPortions(v){ return Math.min(MAX_PORTIONS, Math.max(MIN_PORTIONS, isNaN(v)?INGREDIENTS_BASE.basePortions:v)); }
+
+    /** Переводит крупные значения в удобные единицы: 1000 г -> 1 кг, 1500 мл -> 1.5 л. */
+    function formatAmount(amount, unit){
+        if((unit==='г' || unit==='мл') && amount>=1000){
+            let converted = Math.round((amount/1000)*10)/10;
+            return { amount:converted, unit: unit==='г'?'кг':'л' };
+        }
+        return { amount: Number.isInteger(amount)?amount:Math.round(amount*10)/10, unit };
+    }
+
+    /* ============================================ */
+    /* === ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ =================== */
+    /* ============================================ */
+
+    function isStepAvailable(step){
+        if (completedSteps.includes(step.id)) return false;
+        if (!step.requires || step.requires.length === 0) return true;
+        return step.requires.every(reqId => completedSteps.includes(reqId));
+    }
+
+    function getCurrentStep(){
+        return STEPS.find(s => !completedSteps.includes(s.id) && isStepAvailable(s));
+    }
+
+    function saveAll(){
+        try{
+            localStorage.setItem('moussaka_ingredients', JSON.stringify(checkedIngredients));
+            localStorage.setItem('moussaka_steps', JSON.stringify(completedSteps));
+            localStorage.setItem('moussaka_timers', JSON.stringify(timersState));
+            localStorage.setItem('moussaka_substeps', JSON.stringify(substepsState));
+            localStorage.setItem('moussaka_last_activity', Date.now().toString());
+            localStorage.setItem('moussaka_portions', portions);
+        }catch(e){ console.error('Ошибка сохранения в localStorage:', e); }
+    }
+
+    function showToast(msg, duration){
+        let t = document.getElementById('toast');
+        if(!t) return;
+        t.textContent = msg;
+        t.classList.add('show');
+        clearTimeout(showToast._t);
+        showToast._t = setTimeout(()=>t.classList.remove('show'), duration || 2200);
+    }
+
+    function maybeJokeAboutPortions(newValue, oldValue){
+        if(newValue > PORTIONS_JOKE_THRESHOLD && oldValue <= PORTIONS_JOKE_THRESHOLD){
+            showToast(`🍆 Ого, ${newValue} порций! Зачем тебе столько? 😄`, 3200);
+        }
+    }
+
+    function playSound(){
+        let audio = document.getElementById('alarmAudio');
+        if(audio) audio.play().catch(()=>{ if(navigator.vibrate) navigator.vibrate(200); });
+    }
+
+    function formatTime(sec){ let m=Math.floor(sec/60), s=sec%60; return `${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`; }
+
+    function checkAutoReset(){
+        if(lastActivity){
+            let diff = (Date.now() - parseInt(lastActivity)) / 1000;
+            if(diff >= AUTO_RESET_SECONDS){
+                completedSteps=[]; checkedIngredients=[]; substepsState={}; timersState={};
+                currentActiveTimerId=null; portions=INGREDIENTS_BASE.basePortions;
+                document.getElementById('portionsInput').value = portions;
+                saveAll();
+                showToast('✨ Новый день — прогресс обновлён');
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /* ============================================ */
+    /* === СТАТУС-СТРОКА И ТОЧКИ ===================== */
+    /* ============================================ */
+
+    function updateStatusAndDots(){
+        let statusText = document.getElementById('statusText');
+        let statusDot = document.getElementById('statusDot');
+        let cur = getCurrentStep();
+
+        if(completedSteps.length === STEPS.length){
+            statusText.textContent = 'Καλή όρεξη — мусакас готов!';
+            statusDot.classList.remove('active');
+        } else if(cur){
+            statusText.textContent = `Шаг ${cur.id} из ${STEPS.length}: ${cur.title}`;
+            statusDot.classList.add('active');
+        } else {
+            let locked = STEPS.find(s=>!completedSteps.includes(s.id));
+            statusText.textContent = locked ? `Ждём: шаг ${locked.id} пока недоступен` : 'Всё готово!';
+            statusDot.classList.remove('active');
+        }
+
+        let dotsRow = document.getElementById('dotsRow');
+        dotsRow.innerHTML = STEPS.map(s=>{
+            let cls = completedSteps.includes(s.id) ? 'done' : (cur?.id===s.id ? 'current' : '');
+            return `<button class="step-dot ${cls}" data-jump="${s.id}" aria-label="Шаг ${s.id}: ${s.title}"></button>`;
+        }).join('');
+        dotsRow.querySelectorAll('[data-jump]').forEach(btn=>{
+            btn.addEventListener('click', ()=>{
+                document.querySelector(`.step-card[data-step-id="${btn.dataset.jump}"]`)?.scrollIntoView({behavior:'smooth', block:'center'});
+            });
+        });
+        document.getElementById('dotsLabel').textContent = `Выполнено ${completedSteps.length} из ${STEPS.length} шагов`;
+    }
+
+    /* ============================================ */
+    /* === ПЛАВАЮЩАЯ ПОДСКАЗКА "ЧТО ДАЛЬШЕ" =========== */
+    /* ============================================ */
+
+    function updateFloatPill(){
+        let pill = document.getElementById('floatPill');
+        let label = document.getElementById('fpLabel');
+        let main = document.getElementById('fpMain');
+        let time = document.getElementById('fpTime');
+        let stop = document.getElementById('fpStop');
+        let arrow = document.getElementById('fpArrow');
+
+        if(currentActiveTimerId && timersState[currentActiveTimerId]?.status==='running'){
+            let state = timersState[currentActiveTimerId];
+            label.textContent = 'Идёт таймер';
+            main.textContent = 'Осталось времени';
+            time.textContent = formatTime(state.seconds);
+            time.style.display='inline';
+            stop.style.display='flex';
+            arrow.style.display='none';
+            pill.classList.add('visible');
+            pill.onclick = null;
+        } else {
+            let cur = getCurrentStep();
+            if(cur && completedSteps.length < STEPS.length){
+                label.textContent = 'Далее';
+                main.textContent = `Шаг ${cur.id} · ${cur.title}`;
+                time.style.display='none';
+                stop.style.display='none';
+                arrow.style.display='inline';
+                pill.classList.add('visible');
+                pill.onclick = ()=> document.querySelector(`.step-card[data-step-id="${cur.id}"]`)?.scrollIntoView({behavior:'smooth', block:'center'});
+            } else {
+                pill.classList.remove('visible');
+                pill.onclick = null;
+            }
+        }
+    }
+
+    /* ============================================ */
+    /* === ЗАВЕРШЕНИЕ =============================== */
+    /* ============================================ */
+
+    /* Раньше конфетти и модалка запускались из трёх разных мест с одинаковым
+       кодом — теперь одна общая функция. */
+    function celebrate(){
+        if(typeof confetti === 'function'){
+            confetti({particleCount:200, spread:100, origin:{y:0.6}, colors:['#C85C17','#2B6E8F','#FDF8F0']});
+        }
+        let modal = document.createElement('div');
+        modal.className = 'completion-modal';
+        modal.innerHTML = `<div class="completion-card"><div class="emoji">🇬🇷✨🍆</div><h3>Καλή όρεξη!</h3><p>Ваш мусакас готов! Приятного аппетита!</p><button class="completion-btn" onclick="this.closest('.completion-modal').remove()">Ευχαριστώ!</button></div>`;
+        document.body.appendChild(modal);
+        setTimeout(()=>modal.remove(), 5000);
+    }
+
+    /* ============================================ */
+    /* === ПОДШАГИ И ОТМЕТКА ========================= */
+    /* ============================================ */
+
+    function allSubstepsDone(stepId){
+        let step = STEPS.find(s=>s.id===stepId);
+        if(!step || !step.substeps) return true;
+        let substate = substepsState[stepId] || {};
+        return step.substeps.every((_,idx)=>substate[idx]===true);
+    }
+
+    function updateSubstep(stepId, idx, checked){
+        if(!substepsState[stepId]) substepsState[stepId]={};
+        substepsState[stepId][idx]=checked;
+        saveAll();
+
+        let allDone = allSubstepsDone(stepId);
+        let timerState = timersState[stepId];
+        let timerFinished = !STEPS.find(s=>s.id===stepId)?.timer || (timerState && timerState.seconds===0);
+
+        if(allDone && timerFinished && !completedSteps.includes(stepId)){
+            completedSteps.push(stepId);
+            saveAll();
+            showToast(`✓ Шаг ${stepId} выполнен!`);
+            if(completedSteps.length === STEPS.length) celebrate();
+        }
+        renderSteps();
+    }
+
+    function toggleStep(stepId){
+        if(completedSteps.includes(stepId)){
+            completedSteps = completedSteps.filter(id=>id!==stepId);
+            saveAll();
+            renderSteps();
+            showToast(`Шаг ${stepId} отменён`);
+            return;
+        }
+        if(!allSubstepsDone(stepId)){
+            showToast(`⚠️ Выполните все подпункты`);
+            return;
+        }
+        let step = STEPS.find(s=>s.id===stepId);
+        let timerState = timersState[stepId];
+        if(step?.timer && timerState && timerState.seconds > 0 && timerState.status!=='stopped'){
+            showToast(`⏲️ Дождитесь окончания таймера`);
+            return;
+        }
+        completedSteps.push(stepId);
+        saveAll();
+        renderSteps();
+        showToast(`✓ Шаг ${stepId} готов!`);
+        if(completedSteps.length === STEPS.length) celebrate();
+    }
+
+    /* ============================================ */
+    /* === ТАЙМЕР ==================================== */
+    /* ============================================ */
+
+    function startTimer(stepId, totalSec){
+        if(timersState[stepId] && timersState[stepId].status==='running') return;
+        timersState[stepId] = { status:'running', seconds:totalSec, total:totalSec, timestamp:Date.now() };
+        saveAll();
+        currentActiveTimerId = stepId;
+        updateFloatPill();
+        showToast(`⏲️ Таймер запущен (${Math.floor(totalSec/60)} мин)`);
+        runTimerTick(stepId);
+        renderSteps();
+    }
+
+    /* Раньше здесь каждую секунду вызывался renderSteps() — полная перерисовка
+       ВСЕХ карточек шагов, включая скролл и события. Теперь обновляются только
+       нужные цифры и полоска прогресса, без полной перерисовки. */
+    function runTimerTick(stepId){
+        let lastUpdate = Date.now();
+        function tick(){
+            if(document.hidden){ requestAnimationFrame(tick); return; }
+            let cur = timersState[stepId];
+            if(!cur || cur.status !== 'running') return;
+
+            let now = Date.now();
+            let delta = Math.floor((now - lastUpdate)/1000);
+            if(delta > 0){
+                cur.seconds = Math.max(0, cur.seconds - delta);
+                cur.timestamp = now;
+                lastUpdate = now;
+                saveAll();
+
+                if(cur.seconds <= 0){
+                    cur.status = 'stopped';
+                    cur.seconds = 0;
+                    saveAll();
+                    playSound();
+                    showToast(`⏰ Таймер завершён!`);
+                    if(currentActiveTimerId === stepId) currentActiveTimerId = null;
+
+                    if(allSubstepsDone(stepId) && !completedSteps.includes(stepId)){
+                        completedSteps.push(stepId);
+                        saveAll();
+                        showToast(`✓ Шаг ${stepId} автоматически отмечен!`);
+                        if(completedSteps.length === STEPS.length) celebrate();
+                    }
+                    renderSteps();
+                    updateFloatPill();
+                    return;
+                }
+                updateTimerUI(stepId);
+                updateFloatPill();
+            }
+            requestAnimationFrame(tick);
+        }
+        requestAnimationFrame(tick);
+    }
+
+    function resumeTimers(){
+        for(let key in timersState){
+            let state = timersState[key];
+            if(!state || state.status !== 'running' || !state.timestamp) continue;
+            let stepId = parseInt(key);
+            let elapsed = Math.floor((Date.now() - state.timestamp)/1000);
+            state.seconds = Math.max(0, state.seconds - elapsed);
+            if(state.seconds <= 0){
+                state.status = 'stopped';
+                state.seconds = 0;
+                if(allSubstepsDone(stepId) && !completedSteps.includes(stepId)){
+                    completedSteps.push(stepId);
+                }
+            } else {
+                state.timestamp = Date.now();
+                currentActiveTimerId = stepId;
+                runTimerTick(stepId);
+            }
+        }
+        saveAll();
+    }
+
+    function stopTimer(stepId){
+        let state = timersState[stepId];
+        if(!state) return;
+        state.status = 'stopped';
+        state.seconds = state.total;
+        delete state.timestamp;
+        if(currentActiveTimerId === stepId) currentActiveTimerId = null;
+        saveAll();
+        renderSteps();
+        updateFloatPill();
+        showToast(`⏹️ Таймер остановлен`);
+    }
+
+    function updateTimerUI(stepId){
+        let state = timersState[stepId];
+        if(!state) return;
+        let disp = document.querySelector(`[data-timer-display="${stepId}"]`);
+        if(disp) disp.textContent = formatTime(state.seconds);
+        let fill = document.querySelector(`[data-timer-fill="${stepId}"]`);
+        if(fill) fill.style.width = (100 - (state.seconds/state.total*100)).toFixed(1) + '%';
+        updateFloatPill();
+    }
+
+    /* ============================================ */
+    /* === ФОТО БЛЮДА ================================= */
+    /* ============================================ */
+
+    function resizeImageFile(file, maxDim, quality){
+        return new Promise((resolve, reject)=>{
+            let reader = new FileReader();
+            reader.onload = (e)=>{
+                let img = new Image();
+                img.onload = ()=>{
+                    let width = img.width, height = img.height;
+                    if(width > maxDim || height > maxDim){
+                        if(width > height){ height = Math.round(height * (maxDim/width)); width = maxDim; }
+                        else{ width = Math.round(width * (maxDim/height)); height = maxDim; }
+                    }
+                    let canvas = document.createElement('canvas');
+                    canvas.width = width;
+                    canvas.height = height;
+                    let ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, width, height);
+                    resolve(canvas.toDataURL('image/jpeg', quality));
+                };
+                img.onerror = ()=>reject(new Error('Не удалось декодировать изображение'));
+                img.src = e.target.result;
+            };
+            reader.onerror = ()=>reject(new Error('Не удалось прочитать файл'));
+            reader.readAsDataURL(file);
+        });
+    }
+
+    function savePhotos(){
+        try{
+            localStorage.setItem('moussaka_photos', JSON.stringify(photos));
+        }catch(e){
+            console.error('Ошибка сохранения фото (вероятно, переполнено хранилище):', e);
+            photos.pop();
+            showToast('⚠️ Не хватило места для фото — удалите старые и попробуйте снова');
+        }
+    }
+
+    function deletePhoto(id){
+        photos = photos.filter(p=>p.id!==id);
+        savePhotos();
+        renderPhotos();
+        showToast('Фото удалено');
+    }
+
+    function openLightbox(src){
+        let overlay = document.createElement('div');
+        overlay.className = 'lightbox';
+        let img = document.createElement('img');
+        img.src = src;
+        img.alt = 'Фото блюда';
+        let closeBtn = document.createElement('button');
+        closeBtn.className = 'lightbox-close';
+        closeBtn.setAttribute('aria-label', 'Закрыть');
+        closeBtn.innerHTML = '<i class="fas fa-times"></i>';
+        overlay.appendChild(img);
+        overlay.appendChild(closeBtn);
+        overlay.addEventListener('click', (e)=>{ if(e.target===overlay || e.target.closest('.lightbox-close')) overlay.remove(); });
+        document.body.appendChild(overlay);
+    }
+
+    function renderPhotos(){
+        let strip = document.getElementById('photoStrip');
+        let hint = document.getElementById('photoEmptyHint');
+        if(!strip) return;
+
+        let html = '';
+        photos.forEach(p=>{
+            html += `<div class="photo-thumb" data-photo-id="${p.id}"><button class="photo-delete" data-photo-delete="${p.id}" aria-label="Удалить фото"><i class="fas fa-times"></i></button></div>`;
+        });
+        html += `<label class="photo-add" for="photoInput"><i class="fas fa-plus"></i><span>Добавить</span></label>`;
+        strip.innerHTML = html;
+
+        strip.querySelectorAll('.photo-thumb').forEach(el=>{
+            let id = el.dataset.photoId;
+            let photo = photos.find(p=>p.id===id);
+            if(photo) el.style.backgroundImage = `url(${photo.src})`;
+            el.addEventListener('click', (e)=>{
+                if(e.target.closest('.photo-delete')) return;
+                if(photo) openLightbox(photo.src);
+            });
+        });
+        strip.querySelectorAll('[data-photo-delete]').forEach(btn=>{
+            btn.addEventListener('click', (e)=>{ e.stopPropagation(); deletePhoto(btn.dataset.photoDelete); });
+        });
+
+        if(hint) hint.style.display = photos.length ? 'none' : 'flex';
+    }
+
+    /* ============================================ */
+    /* === ИНГРЕДИЕНТЫ ================================ */
+    /* ============================================ */
+
+    function renderIngredients(){
+        let container = document.getElementById('ingredientsContainer');
+        let cats = [...new Set(INGREDIENTS_BASE.items.map(i=>i.category))];
+        let html = '';
+        cats.forEach(cat=>{
+            html += `<div class="ing-category">${cat}</div>`;
+            INGREDIENTS_BASE.items.filter(i=>i.category===cat).forEach(ing=>{
+                let rawAmt = (ing.baseAmount/INGREDIENTS_BASE.basePortions)*portions;
+                let f = formatAmount(rawAmt, ing.unit);
+                let ch = checkedIngredients.includes(ing.id);
+                html += `<div class="ingredient-item ${ch?'checked':''}" data-ing-id="${ing.id}"><input type="checkbox" ${ch?'checked':''}><span class="ingredient-name">${ing.name}</span><span class="ingredient-amount">${f.amount} ${f.unit}</span></div>`;
+            });
+        });
+        container.innerHTML = html;
+        document.querySelectorAll('.ingredient-item').forEach(el=>{
+            let cb = el.querySelector('input');
+            let id = el.dataset.ingId;
+            cb.addEventListener('change', ()=>{
+                if(cb.checked){ if(!checkedIngredients.includes(id)) checkedIngredients.push(id); el.classList.add('checked'); }
+                else{ checkedIngredients = checkedIngredients.filter(i=>i!==id); el.classList.remove('checked'); }
+                saveAll();
+            });
+            el.addEventListener('click', (e)=>{ if(e.target!==cb) cb.click(); });
+        });
+    }
+
+    function updatePortions(delta){
+        let old = portions;
+        portions = clampPortions(portions + delta);
+        maybeJokeAboutPortions(portions, old);
+        document.getElementById('portionsInput').value = portions;
+        renderIngredients();
+        saveAll();
+    }
+
+    /* ============================================ */
+    /* === ОТРИСОВКА ШАГОВ ============================ */
+    /* ============================================ */
+
+    function renderSteps(){
+        let container = document.getElementById('stepsContainer');
+        if(!container) return;
+        let curGroup = '', html = '';
+        let curStep = getCurrentStep();
+
+        STEPS.forEach((step, i)=>{
+            if(step.group !== curGroup){ curGroup = step.group; html += `<div class="step-group-title">${step.group}</div>`; }
+
+            let isDone = completedSteps.includes(step.id);
+            let isLocked = !isStepAvailable(step) && !isDone;
+            let isCurrent = curStep?.id === step.id;
+            let timerState = timersState[step.id];
+            let isTimerActive = timerState && timerState.status === 'running';
+            let substate = substepsState[step.id] || {};
+
+            let substepsHtml = '<div class="substeps">';
+            step.substeps.forEach((sub, idx)=>{
+                let ch = substate[idx] === true;
+                substepsHtml += `<div class="substep ${ch?'checked':''}"><input type="checkbox" class="substep-cb" data-step="${step.id}" data-idx="${idx}" ${ch?'checked':''} ${isLocked||isDone?'disabled':''}><span>${sub}</span></div>`;
+            });
+            substepsHtml += '</div>';
+
+            let timerHtml = '';
+            if(step.timer){
+                if(isTimerActive){
+                    let currSec = timerState.seconds;
+                    let pct = (100 - (currSec/timerState.total*100));
+                    timerHtml = `<div class="timer-control"><div class="bake-wrap">
+                        <div class="bake-dish"><div class="bake-glow"></div></div>
+                        <div><span class="timer-time" data-timer-display="${step.id}">${formatTime(currSec)}</span><div class="timer-progress-track"><div class="timer-progress-fill" data-timer-fill="${step.id}" style="width:${pct.toFixed(1)}%"></div></div></div>
+                        <button class="timer-icon-btn" data-timer-stop="${step.id}" aria-label="Остановить таймер"><i class="fas fa-stop"></i></button>
+                    </div></div>`;
+                } else if(!isDone && !isLocked){
+                    timerHtml = `<div class="timer-control"><button class="timer-btn" data-timer-start="${step.id}"><i class="fas fa-hourglass-start"></i> Запустить таймер (${step.timer.label})</button></div>`;
+                }
+            }
+
+            let cardClasses = `step-card ${isDone?'done':''} ${isLocked?'locked':''} ${isCurrent?'current':''} ${firstStepsRender?'enter':''}`;
+            let cardStyle = firstStepsRender ? `style="animation-delay:${Math.min(i*30,300)}ms"` : '';
+
+            html += `<div class="${cardClasses}" data-step-id="${step.id}" ${cardStyle}>
+                <div class="step-content">
+                    <div class="step-header">
+                        <div class="step-number">${step.id}</div>
+                        <div class="step-title">${step.title}</div>
+                        ${step.timer ? `<div class="step-timer-badge"><i class="far fa-clock"></i> ${step.timer.label}</div>` : ''}
+                        ${isCurrent?'<span class="current-tag">Сейчас</span>':''}
+                    </div>
+                    <div class="step-desc">${step.desc}</div>
+                    ${substepsHtml}
+                    ${timerHtml}
+                </div>
+                <button class="step-done-btn" data-step-toggle="${step.id}" ${isDone||isLocked?'disabled':''}>
+                    ${isDone?'<i class="fas fa-check-circle"></i> Готово':'<i class="far fa-check-circle"></i> Отметить выполненным'}
+                </button>
+            </div>`;
+        });
+
+        container.innerHTML = html;
+        firstStepsRender = false;
+
+        document.querySelectorAll('[data-step-toggle]').forEach(btn=>btn.addEventListener('click', ()=>toggleStep(parseInt(btn.dataset.stepToggle))));
+        document.querySelectorAll('[data-timer-start]').forEach(btn=>btn.addEventListener('click', ()=>{
+            let sid = parseInt(btn.dataset.timerStart);
+            let s = STEPS.find(s=>s.id===sid);
+            if(s?.timer) startTimer(sid, s.timer.duration);
+        }));
+        document.querySelectorAll('[data-timer-stop]').forEach(btn=>btn.addEventListener('click', ()=>stopTimer(parseInt(btn.dataset.timerStop))));
+        document.querySelectorAll('.substep-cb').forEach(cb=>cb.addEventListener('change', function(){
+            updateSubstep(parseInt(this.dataset.step), parseInt(this.dataset.idx), this.checked);
+        }));
+
+        updateStatusAndDots();
+        updateFloatPill();
+    }
+
+    /* ============================================ */
+    /* === СБРОС ======================================= */
+    /* ============================================ */
+
+    function resetAll(){
+        if(confirm('🍆 Сбросить весь прогресс приготовления?')){
+            completedSteps=[]; checkedIngredients=[]; substepsState={}; timersState={};
+            currentActiveTimerId=null; portions=INGREDIENTS_BASE.basePortions;
+            document.getElementById('portionsInput').value = portions;
+            saveAll();
+            renderIngredients();
+            renderSteps();
+            updateFloatPill();
+            showToast('Прогресс сброшен');
+        }
+    }
+
+    /* ============================================ */
+    /* === ТЁМНАЯ ТЕМА ================================= */
+    /* ============================================ */
+
+    function applyTheme(){
+        document.documentElement.dataset.theme = isDark ? 'dark' : 'light';
+        document.getElementById('themeBtn').innerHTML = isDark ? '<i class="fa-solid fa-sun"></i>' : '<i class="fa-solid fa-moon"></i>';
+    }
+
+    /* ============================================ */
+    /* === WAKE LOCK =================================== */
+    /* ============================================ */
+
+    function initWakeLock(){
+        let btn = document.getElementById('wakeLockBtn');
+        if(!('wakeLock' in navigator)){ btn.style.display = 'none'; return; }
+        btn.addEventListener('click', async ()=>{
+            if(!wakeLock){
+                try{
+                    wakeLock = await navigator.wakeLock.request('screen');
+                    btn.classList.add('active');
+                    btn.innerHTML = '<i class="fas fa-check"></i> Экран активен';
+                    wakeLock.addEventListener('release', ()=>{
+                        wakeLock = null;
+                        btn.classList.remove('active');
+                        btn.innerHTML = '<i class="fas fa-sun"></i> Экран не гаснет';
+                    });
+                }catch(e){ showToast('Не удалось активировать'); }
+            } else {
+                wakeLock.release();
+            }
+        });
+    }
+
+    /* ============================================ */
+    /* === ИНИЦИАЛИЗАЦИЯ ================================ */
+    /* ============================================ */
+
+    function init(){
+        applyTheme();
+        let wasReset = checkAutoReset();
+
+        document.getElementById('portionsInput').value = portions;
+        if(!wasReset) resumeTimers();
+
+        renderIngredients();
+        renderSteps();
+        renderPhotos();
+
+        document.getElementById('photoInput').addEventListener('change', async function(){
+            let files = Array.from(this.files || []);
+            for(let file of files){
+                if(!file.type.startsWith('image/')) continue;
+                try{
+                    let dataUrl = await resizeImageFile(file, 1200, 0.82);
+                    photos.push({ id: Date.now().toString(36) + Math.random().toString(36).slice(2), src: dataUrl });
+                }catch(e){
+                    console.error('Ошибка обработки фото:', e);
+                    showToast('⚠️ Не удалось обработать одно из фото');
+                }
+            }
+            savePhotos();
+            renderPhotos();
+            this.value = '';
+        });
+
+        document.getElementById('portMinus').addEventListener('click', ()=>updatePortions(-1));
+        document.getElementById('portPlus').addEventListener('click', ()=>updatePortions(1));
+        document.getElementById('portionsInput').addEventListener('change', function(){
+            let old = portions;
+            portions = clampPortions(parseInt(this.value));
+            maybeJokeAboutPortions(portions, old);
+            this.value = portions;
+            renderIngredients();
+            saveAll();
+        });
+
+        document.getElementById('resetBtn').addEventListener('click', resetAll);
+
+        document.getElementById('startBtn').addEventListener('click', ()=>{
+            let cur = getCurrentStep();
+            let target = cur ? document.querySelector(`.step-card[data-step-id="${cur.id}"]`) : document.querySelector('.footer');
+            target?.scrollIntoView({behavior:'smooth', block:'center'});
+        });
+
+        document.getElementById('scrollTop').addEventListener('click', ()=>window.scrollTo({top:0, behavior:'smooth'}));
+        document.getElementById('scrollTop').addEventListener('keydown', (e)=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); window.scrollTo({top:0, behavior:'smooth'}); } });
+        document.getElementById('fpStop').addEventListener('click', (e)=>{ e.stopPropagation(); if(currentActiveTimerId) stopTimer(currentActiveTimerId); });
+
+        document.getElementById('themeBtn').addEventListener('click', ()=>{
+            isDark = !isDark;
+            localStorage.setItem('moussaka_theme', isDark ? 'dark' : 'light');
+            applyTheme();
+        });
+
+        window.addEventListener('scroll', ()=>{
+            document.getElementById('scrollTop').classList.toggle('visible', window.scrollY > 200);
+        });
+
+        initWakeLock();
+    }
+
+    document.addEventListener('DOMContentLoaded', init);
+})();
+</script>
+</body>
+</html>
